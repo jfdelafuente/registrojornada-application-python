@@ -1,35 +1,42 @@
-import os
-import telebot
+"""Telegram bot for Orange workday registration."""
+
 import logging
-import ViveOrange as viveOrange
-from DiaValidator import validar_dia, dia_validate
-from dotenv import load_dotenv
+import telebot
 from datetime import date
-from pathlib import Path
+from dotenv import load_dotenv
 
-# Importar utilidades de seguridad
+# Import configuration and utilities
+from config import get_settings
 from utils.logger import setup_logger
+from DiaValidator import validar_dia, dia_validate
+import ViveOrange as viveOrange
 
+# Load environment variables
 load_dotenv()
-token = os.getenv('BOT_TOKEN')
+
+# Get settings using Pydantic Settings
+settings = get_settings()
+
+# Initialize bot with decrypted token
+from security.secrets_manager import SecretsManager
+secrets = SecretsManager()
+token = secrets.get_secret('BOT_TOKEN_ENCRYPTED')
 bot = telebot.TeleBot(token)
 
 dic_user = {}
 
-# Configurar logging seguro con sanitización
-log_dir = Path(__file__).parent.parent / 'logs'
-log_dir.mkdir(exist_ok=True)
+# Setup logging with settings
 logger = setup_logger(
     name='registrojornada',
-    log_file=str(log_dir / 'registrojornada.log'),
+    log_file=str(settings.logs_dir / 'registrojornada.log'),
     level=logging.INFO,
     console=True
 )
 
-# Configurar logger para ViveOrange también
+# Setup logger for ViveOrange
 vive_logger = setup_logger(
     name='ViveOrange',
-    log_file=str(log_dir / 'vive_orange.log'),
+    log_file=str(settings.logs_dir / 'vive_orange.log'),
     level=logging.INFO
 )
 

@@ -43,8 +43,19 @@ class Settings(BaseSettings):
     oam_base_url: str = "https://applogin.orange.es"
     registro_jornada_url: str = "https://newvo.orange.es/group/viveorange/registro-de-jornada"
     registro_jornada_api_url: str = "https://newvo.orange.es/api/jsonws/invoke"
-    registro_accion_url: str = "https://www.registratujornadaorange.com/RealizarAccion"
-    registro_informe_url: str = "https://www.registratujornadaorange.com/ObtenerContenidoInformeGeneral"
+    url_rj_accion: str = "https://www.registratujornadaorange.com/RealizarAccion"
+    url_rj_informe: str = "https://www.registratujornadaorange.com/ObtenerContenidoInformeGeneral"
+
+    # Legacy URL aliases for backward compatibility
+    @property
+    def registro_accion_url(self) -> str:
+        """Legacy alias for url_rj_accion."""
+        return self.url_rj_accion
+
+    @property
+    def registro_informe_url(self) -> str:
+        """Legacy alias for url_rj_informe."""
+        return self.url_rj_informe
 
     # Paths
     @property
