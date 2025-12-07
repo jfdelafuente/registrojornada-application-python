@@ -7,3 +7,7 @@ requests==2.32.3
 
 # Security
 cryptography==42.0.5
+
+# Configuration and Validation (Fase 2)
+pydantic==2.7.1
+pydantic-settings==2.2.1
