@@ -6,6 +6,13 @@ import logging
 import requests
 from security.secrets_manager import SecretsManager
 from config import get_settings
+from exceptions import (
+    AuthenticationError,
+    InvalidCredentialsError,
+    OAMRedirectError,
+    SessionExpiredError,
+    HTMLParsingError
+)
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +49,9 @@ class AuthService:
             True if authentication successful, False otherwise
 
         Raises:
-            requests.RequestException: On network error
-            ValueError: On authentication failure
+            AuthenticationError: On authentication failure
+            OAMRedirectError: On OAM redirect failure
+            HTMLParsingError: On HTML parsing failure
         """
         try:
             # Step 1: Initial ViveOrange request
@@ -65,9 +73,21 @@ class AuthService:
             logger.info("✓ Authentication successful")
             return True
 
+        except (AuthenticationError, OAMRedirectError, HTMLParsingError):
+            # Re-raise our custom exceptions
+            raise
+        except requests.RequestException as e:
+            logger.error(f"Network error during authentication: {e}")
+            raise AuthenticationError(
+                "Network error during authentication",
+                {'error': str(e)}
+            )
         except Exception as e:
-            logger.error(f"Authentication failed: {e}")
-            raise ValueError(f"Authentication error: {e}")
+            logger.error(f"Unexpected authentication error: {e}", exc_info=True)
+            raise AuthenticationError(
+                "Unexpected authentication error",
+                {'error': str(e)}
+            )
 
     def _step1_initial_request(
         self,
@@ -92,11 +112,13 @@ class AuthService:
         form = soup.select_one('body form')
 
         if not form:
-            raise ValueError("OAM redirect form not found")
+            raise OAMRedirectError(step="step1_initial_request")
 
         oam_url = form.get('action')
-        oam_data = {}
+        if not oam_url:
+            raise HTMLParsingError(element="form action attribute")
 
+        oam_data = {}
         for tag in form.find_all("input", type="hidden"):
             oam_data[tag.get("name")] = tag.get("value")
 
@@ -130,9 +152,13 @@ class AuthService:
         form = soup.select_one('form#loginData')
 
         if not form:
-            raise ValueError("Login form not found")
+            raise OAMRedirectError(step="step2_oam_redirect")
 
-        login_url = self.settings.oam_base_url + form.get('action')
+        form_action = form.get('action')
+        if not form_action:
+            raise HTMLParsingError(element="login form action")
+
+        login_url = self.settings.oam_base_url + form_action
         login_data = {}
 
         # Process form fields
@@ -179,9 +205,12 @@ class AuthService:
         form = soup.select_one('body form')
 
         if not form:
-            raise ValueError("Return form not found - login may have failed")
+            # Login credentials might be invalid
+            raise InvalidCredentialsError(username=self.username)
 
         return_url = form.get('action')
+        if not return_url:
+            raise HTMLParsingError(element="return form action")
         return_data = {}
 
         for tag in form.find_all("input", type="hidden"):

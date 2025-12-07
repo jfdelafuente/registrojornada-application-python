@@ -7,6 +7,12 @@ import logging
 import requests
 from config import get_settings
 from models.workday import WorkdayRegistration, WeeklyReport, WorkdayTypeEnum
+from exceptions import (
+    RegistrationError,
+    ReportGenerationError,
+    HTMLParsingError,
+    ValidationError
+)
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +55,11 @@ class HRService:
             WorkdayRegistration with result
 
         Raises:
-            requests.RequestException: On network error
-            ValueError: On invalid input
+            RegistrationError: On registration failure
+            ValidationError: On invalid input data
         """
         try:
-            # Validate inputs
+            # Validate inputs with Pydantic
             registration = WorkdayRegistration(
                 date=work_date,
                 start_time=start_time,
@@ -62,9 +68,18 @@ class HRService:
                 location=location
             )
 
-            date_str = work_date.strftime("%d/%m/%Y")
-            logger.info(f"Registering workday for {date_str} from {start_time} to {end_time}")
+        except Exception as e:
+            # Pydantic validation failed
+            logger.error(f"Invalid workday data: {e}")
+            raise ValidationError(
+                "Invalid workday registration data",
+                {'error': str(e)}
+            )
 
+        date_str = work_date.strftime("%d/%m/%Y")
+        logger.info(f"Registering workday for {date_str} from {start_time} to {end_time}")
+
+        try:
             # Submit registration
             response = session.post(
                 self.settings.url_rj_accion,
@@ -91,15 +106,29 @@ class HRService:
                 registration.success = False
                 registration.message = "Registration failed - check response"
                 logger.warning(f"Registration may have failed for {date_str}")
+                raise RegistrationError(
+                    date=date_str,
+                    reason="Server returned error in response"
+                )
 
             registration.hours_worked = registration.calculate_hours()
             return registration
 
+        except requests.RequestException as e:
+            logger.error(f"Network error during workday registration: {e}")
+            raise RegistrationError(
+                date=date_str,
+                reason=f"Network error: {str(e)}"
+            )
+        except RegistrationError:
+            # Re-raise RegistrationError
+            raise
         except Exception as e:
-            logger.error(f"Failed to register workday: {e}")
-            registration.success = False
-            registration.message = f"Error: {str(e)}"
-            return registration
+            logger.error(f"Unexpected error during workday registration: {e}", exc_info=True)
+            raise RegistrationError(
+                date=date_str,
+                reason=f"Unexpected error: {str(e)}"
+            )
 
     def get_weekly_report(
         self,
@@ -121,7 +150,7 @@ class HRService:
             WeeklyReport with all registrations
 
         Raises:
-            requests.RequestException: On network error
+            ReportGenerationError: On report generation failure
         """
         try:
             # Calculate date range
@@ -163,12 +192,20 @@ class HRService:
 
             return report
 
+        except requests.RequestException as e:
+            logger.error(f"Network error fetching weekly report: {e}")
+            raise ReportGenerationError(
+                report_type="weekly",
+                reason=f"Network error: {str(e)}"
+            )
+        except HTMLParsingError:
+            # Re-raise HTML parsing errors
+            raise
         except Exception as e:
-            logger.error(f"Failed to get weekly report: {e}")
-            # Return empty report on error
-            return WeeklyReport(
-                start_date=start_date,
-                end_date=end_date
+            logger.error(f"Unexpected error generating report: {e}", exc_info=True)
+            raise ReportGenerationError(
+                report_type="weekly",
+                reason=f"Unexpected error: {str(e)}"
             )
 
     def _parse_report_html(
@@ -197,6 +234,11 @@ class HRService:
             soup = BeautifulSoup(html_text, 'lxml')
             rows = soup.select('#tblEventos > tbody > tr')
 
+            if not rows:
+                # No rows found - might be no data or wrong selector
+                logger.warning("No report rows found in HTML")
+                return report
+
             for row in rows:
                 try:
                     # Extract data from table columns
@@ -207,9 +249,17 @@ class HRService:
                     # Column 5: End date/time
                     # Column 6: Duration
 
-                    start_str = row.select_one('td:nth-child(3)').text.strip()
-                    type_location = row.select_one('td:nth-child(4)').text.strip()
-                    end_str = row.select_one('td:nth-child(5)').text.strip()
+                    start_elem = row.select_one('td:nth-child(3)')
+                    type_elem = row.select_one('td:nth-child(4)')
+                    end_elem = row.select_one('td:nth-child(5)')
+
+                    if not start_elem or not type_elem or not end_elem:
+                        logger.warning("Missing table columns in row, skipping")
+                        continue
+
+                    start_str = start_elem.text.strip()
+                    type_location = type_elem.text.strip()
+                    end_str = end_elem.text.strip()
 
                     logger.debug(f"Parsing row: {start_str} | {type_location} | {end_str}")
 
@@ -250,7 +300,8 @@ class HRService:
                     continue
 
         except Exception as e:
-            logger.error(f"Failed to parse report HTML: {e}")
+            logger.error(f"Critical error parsing report HTML: {e}", exc_info=True)
+            raise HTMLParsingError(element="report table")
 
         return report
 
