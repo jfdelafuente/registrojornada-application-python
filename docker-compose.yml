@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  registrojornadaviveopython:
+    image: viveorange
+    build:
+      context: .
+      dockerfile: ./Dockerfile
