@@ -1,8 +1,8 @@
 """Models for workday registration and reporting."""
 
-from datetime import date, datetime
-from typing import List, Optional
-from pydantic import BaseModel, Field, field_validator
+from datetime import date as Date, datetime
+from typing import Optional
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from .enums import WorkdayTypeEnum
 
 # Alias for backward compatibility
@@ -17,7 +17,7 @@ class WorkdayRegistration(BaseModel):
     type of work, and status.
     """
 
-    date: date = Field(..., description="Date of the workday")
+    date: Date = Field(..., description="Date of the workday")
     start_time: str = Field(..., description="Start time (HH:MM)")
     end_time: str = Field(..., description="End time (HH:MM)")
     workday_type: WorkdayTypeEnum = Field(
@@ -93,11 +93,11 @@ class WorkdayRegistration(BaseModel):
 
         return msg
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            date: lambda v: v.strftime("%d/%m/%Y")
+    model_config = ConfigDict(
+        json_encoders={
+            Date: lambda v: v.strftime("%d/%m/%Y")
         }
+    )
 
 
 class WeeklyReport(BaseModel):
@@ -107,13 +107,13 @@ class WeeklyReport(BaseModel):
     Aggregates multiple workday registrations into a weekly summary.
     """
 
-    start_date: date = Field(..., description="Week start date")
-    end_date: date = Field(..., description="Week end date")
+    start_date: Date = Field(..., description="Week start date")
+    end_date: Date = Field(..., description="Week end date")
     total_days: int = Field(default=0, description="Total days worked")
     telework_days: int = Field(default=0, description="Telework days")
     office_days: int = Field(default=0, description="Office days")
     total_hours: float = Field(default=0.0, description="Total hours worked")
-    registrations: List[WorkdayRegistration] = Field(
+    registrations: list[WorkdayRegistration] = Field(
         default_factory=list,
         description="List of daily registrations"
     )
@@ -162,8 +162,8 @@ class WeeklyReport(BaseModel):
 
         return msg
 
-    class Config:
-        """Pydantic configuration."""
-        json_encoders = {
-            date: lambda v: v.strftime("%d/%m/%Y")
+    model_config = ConfigDict(
+        json_encoders={
+            Date: lambda v: v.strftime("%d/%m/%Y")
         }
+    )
