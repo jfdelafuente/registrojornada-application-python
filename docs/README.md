@@ -9,6 +9,14 @@ Este directorio contiene toda la documentación técnica del proyecto organizada
 - **[ANALISIS_PROYECTO.md](ANALISIS_PROYECTO.md)** - Análisis completo del proyecto legacy y plan de modernización
 - **[NEXT_STEPS.md](NEXT_STEPS.md)** - Roadmap detallado de próximas fases (5-8) y mejoras futuras
 
+### Guías Prácticas
+
+- **[GUIA_TESTING.md](GUIA_TESTING.md)** - 🧪 Guía completa paso a paso para ejecutar tests
+  - Setup del entorno de testing
+  - Validación automática con scripts
+  - Comandos esenciales
+  - Troubleshooting común
+
 ### Documentación por Fases
 
 #### [Fase 1: Seguridad y Logging](fases/FASE1_SEGURIDAD.md)
