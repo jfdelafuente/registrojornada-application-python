@@ -51,7 +51,8 @@ Bot de Telegram para automatizar el registro de jornadas laborales en el sistema
 
 1. **Clonar el repositorio**
    ```bash
-   cd "c:\My Program Files\workspace-flask\registrojornada-application-python"
+   git clone https://github.com/jfdelafuente/registrojornada-application-python.git
+   cd registrojornada-application-python
    ```
 
 2. **Crear entorno virtual (recomendado)**
