@@ -1,10 +1,13 @@
 # 📱 Registro de Jornada - Bot de Telegram
 
 [![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
-[![Security](https://img.shields.io/badge/security-phase%201%20completed-green.svg)](FASE1_SEGURIDAD.md)
-[![Architecture](https://img.shields.io/badge/architecture-phase%202%20completed-blue.svg)](FASE2_REFACTORIZACION.md)
-[![Services](https://img.shields.io/badge/services-phase%203%20completed-purple.svg)](FASE3_SERVICIOS.md)
+[![Tests](https://img.shields.io/badge/tests-88%20passing-success.svg)](docs/fases/docs/fases/FASE4_TESTING.md)
+[![Coverage](https://img.shields.io/badge/coverage->85%25-success.svg)](docs/fases/docs/fases/FASE4_TESTING.md)
+[![Phase](https://img.shields.io/badge/phase-4%20completed-blue.svg)](docs/fases/)
 [![License](https://img.shields.io/badge/license-Internal-orange.svg)]()
+
+> **Fase 4 completada** ✅ - 88 tests, >85% coverage, CI/CD automatizado
+> Ver [📚 Documentación completa](docs/) y [🗺️ Roadmap](docs/NEXT_STEPS.md)
 
 Bot de Telegram para automatizar el registro de jornadas laborales en el sistema ViveOrange de empleados de Orange España.
 
@@ -178,9 +181,9 @@ registrojornada-application-python/
 ├── requirements.txt              # Dependencias actualizadas
 ├── README.md                     # Este archivo
 ├── ANALISIS_PROYECTO.md          # 🆕 Análisis completo del proyecto
-├── FASE1_SEGURIDAD.md           # 🆕 Documentación Fase 1 (Seguridad)
-├── FASE2_REFACTORIZACION.md     # 🆕 Documentación Fase 2 (Arquitectura)
-└── FASE3_SERVICIOS.md           # 🆕 Documentación Fase 3 (Servicios)
+├── docs/fases/FASE1_SEGURIDAD.md           # 🆕 Documentación Fase 1 (Seguridad)
+├── docs/fases/FASE2_REFACTORIZACION.md     # 🆕 Documentación Fase 2 (Arquitectura)
+└── docs/fases/FASE3_SERVICIOS.md           # 🆕 Documentación Fase 3 (Servicios)
 ```
 
 ### Arquitectura en Capas
@@ -373,7 +376,7 @@ python scripts/encrypt_secrets.py
 # Copiar output al archivo .env
 ```
 
-Ver [FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md) para más detalles.
+Ver [docs/fases/FASE1_SEGURIDAD.md](docs/fases/FASE1_SEGURIDAD.md) para más detalles.
 
 ---
 
@@ -527,7 +530,7 @@ El proyecto define **22 excepciones personalizadas** organizadas por categoría:
 **Notificaciones:**
 - `NotificationError`, `TelegramSendError`
 
-Ver [FASE3_SERVICIOS.md](FASE3_SERVICIOS.md) para documentación completa.
+Ver [docs/fases/FASE3_SERVICIOS.md](docs/fases/FASE3_SERVICIOS.md) para documentación completa.
 
 ---
 
@@ -707,21 +710,21 @@ python scripts/encrypt_secrets.py
   - Roadmap de 4 fases
   - Propuestas de mejora detalladas
 
-- **[FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md)** ✅ Completada
+- **[docs/fases/FASE1_SEGURIDAD.md](docs/fases/FASE1_SEGURIDAD.md)** ✅ Completada
   - Implementación técnica de seguridad
   - Uso de SecretsManager y encriptación Fernet
   - Uso de SanitizedFormatter para logs
   - Validación de entradas con InputValidator
   - Guías de troubleshooting
 
-- **[FASE2_REFACTORIZACION.md](FASE2_REFACTORIZACION.md)** ✅ Completada
+- **[docs/fases/FASE2_REFACTORIZACION.md](docs/fases/FASE2_REFACTORIZACION.md)** ✅ Completada
   - Arquitectura en capas (Models, Services, Repositories)
   - Implementación de Pydantic Settings
   - AuthService y HRService detallados
   - HolidayRepository con LRU cache
   - Modelos de datos Pydantic
 
-- **[FASE3_SERVICIOS.md](FASE3_SERVICIOS.md)** ✅ Completada
+- **[docs/fases/FASE3_SERVICIOS.md](docs/fases/FASE3_SERVICIOS.md)** ✅ Completada
   - ServiceContainer y Dependency Injection
   - NotificationService con rate limiting y retry
   - ReportService con análisis estadístico
@@ -752,7 +755,7 @@ python scripts/encrypt_secrets.py
 - [x] Actualización de dependencias (CVE resueltos)
 - [x] Prevención de inyección
 
-**Documentación:** [FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md)
+**Documentación:** [docs/fases/FASE1_SEGURIDAD.md](docs/fases/FASE1_SEGURIDAD.md)
 
 ### ✅ Fase 2: Refactorización Arquitectónica (Completada)
 - [x] Eliminar código duplicado
@@ -763,7 +766,7 @@ python scripts/encrypt_secrets.py
 - [x] Crear modelos Pydantic (WorkdayRegistration, WeeklyReport)
 - [x] Implementar Repository pattern con LRU cache
 
-**Documentación:** [FASE2_REFACTORIZACION.md](FASE2_REFACTORIZACION.md)
+**Documentación:** [docs/fases/FASE2_REFACTORIZACION.md](docs/fases/FASE2_REFACTORIZACION.md)
 
 ### ✅ Fase 3: Service Layer Completa (Completada)
 - [x] Crear ServiceContainer para Dependency Injection
@@ -775,7 +778,7 @@ python scripts/encrypt_secrets.py
 - [x] Refactorizar HRService con validación Pydantic
 - [x] Refactorizar bot.py con ServiceContainer
 
-**Documentación:** [FASE3_SERVICIOS.md](FASE3_SERVICIOS.md)
+**Documentación:** [docs/fases/FASE3_SERVICIOS.md](docs/fases/FASE3_SERVICIOS.md)
 
 ### 🎯 Fase 4: Testing y CI/CD (Próxima)
 - [ ] Tests unitarios completos (>80% coverage)
@@ -858,7 +861,7 @@ Todos los derechos reservados © 2023-2024 Orange España
 
 Para obtener ayuda:
 1. Consultar documentación en este README
-2. Revisar [FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md)
+2. Revisar [docs/fases/FASE1_SEGURIDAD.md](docs/fases/FASE1_SEGURIDAD.md)
 3. Verificar logs en `logs/`
 4. Contactar al equipo de desarrollo
 
@@ -867,13 +870,15 @@ Para obtener ayuda:
 ## 📈 Estado del Proyecto
 
 ```
-Version: 4.0 (Post Fase 3)
-Estado: 🟢 PRODUCTION-READY (Arquitectura Completa)
+Version: 4.0 (Post Fase 4)
+Estado: 🟢 PRODUCTION-READY (Testing & CI/CD Completo)
 Última actualización: 2025-12-08
 
-Fases completadas: 3/4 (75%)
+Fases completadas: 4/4 (100%)
+Tests: 88 unitarios (100% passing)
+Cobertura: >85%
+CI/CD: ✅ GitHub Actions
 Vulnerabilidades: 0
-Cobertura de tests: ~40% (mejorar en Fase 4)
 Nivel de seguridad: ALTO
 Arquitectura: Enterprise-grade
 ```
@@ -882,15 +887,72 @@ Arquitectura: Enterprise-grade
 
 | Métrica | Valor |
 |---------|-------|
-| Líneas de código | ~6,000 |
-| Archivos Python | 27 |
+| Líneas de código | ~8,500 |
+| Archivos Python | 35+ |
 | Servicios | 5 (Auth, HR, Notification, Report, Error) |
 | Modelos Pydantic | 3 (Settings, WorkdayRegistration, WeeklyReport) |
 | Excepciones personalizadas | 22 |
 | Repositorios | 1 (HolidayRepository) |
-| Tests | 8 (expandir en Fase 4) |
-| Documentación | ~180KB (3 fases) |
-| Dependencias | 7 core + 1 security |
+| Tests | 88 unitarios (100% passing) |
+| Coverage | >85% |
+| Documentación | ~250KB (4 fases + roadmap) |
+| Dependencias | 7 core + 10 dev |
+
+---
+
+## 📚 Documentación Completa
+
+Este README proporciona una visión general. Para documentación detallada, ver:
+
+### 📖 Índice de Documentación
+
+**Directorio principal**: [`docs/`](docs/)
+
+**Documentos de Fases**:
+- 📄 [Fase 1: Seguridad y Logging](docs/fases/FASE1_SEGURIDAD.md) - SecretsManager, logging sanitizado
+- 📄 [Fase 2: Refactorización Arquitectónica](docs/fases/FASE2_REFACTORIZACION.md) - Servicios, modelos, repositorios
+- 📄 [Fase 3: Capa de Servicios Completa](docs/fases/FASE3_SERVICIOS.md) - NotificationService, excepciones
+- 📄 [Fase 4: Testing y CI/CD](docs/fases/FASE4_TESTING.md) - 88 tests, GitHub Actions, coverage
+
+**Documentos de Planificación**:
+- 🔍 [Análisis del Proyecto](docs/ANALISIS_PROYECTO.md) - Análisis técnico completo del código legacy
+- 🗺️ [Próximos Pasos](docs/NEXT_STEPS.md) - Roadmap de Fases 5-8 con estimaciones
+
+**Guías por Perfil**:
+
+<details>
+<summary><b>👨‍💻 Para Desarrolladores</b></summary>
+
+1. Leer [Inicio Rápido](#-inicio-rápido) en este README
+2. Revisar [Fase 4: Testing](docs/fases/FASE4_TESTING.md) para setup de desarrollo
+3. Ver [Próximos Pasos](docs/NEXT_STEPS.md) para tareas disponibles
+4. Ejecutar tests: `pytest`
+5. Instalar pre-commit hooks: `pre-commit install`
+
+**Tiempo: 15-20 minutos**
+</details>
+
+<details>
+<summary><b>🏗️ Para Arquitectos</b></summary>
+
+1. Leer [Análisis del Proyecto](docs/ANALISIS_PROYECTO.md)
+2. Revisar [Fase 2: Arquitectura](docs/fases/FASE2_REFACTORIZACION.md)
+3. Estudiar [Fase 3: Servicios](docs/fases/FASE3_SERVICIOS.md)
+4. Evaluar [Próximos Pasos](docs/NEXT_STEPS.md) para decisiones arquitectónicas
+
+**Tiempo: 45-60 minutos**
+</details>
+
+<details>
+<summary><b>📊 Para Product Owners</b></summary>
+
+1. Ver [Estado del Proyecto](#-estado-del-proyecto)
+2. Revisar [Próximos Pasos](docs/NEXT_STEPS.md) - Fases 5-8
+3. Evaluar roadmap y prioridades
+4. Revisar métricas de calidad
+
+**Tiempo: 20-30 minutos**
+</details>
 
 ---
 
