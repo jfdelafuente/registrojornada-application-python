@@ -10,6 +10,7 @@ Usage:
 """
 
 import sys
+import os
 import subprocess
 from pathlib import Path
 from typing import List, Tuple
@@ -163,6 +164,14 @@ def main():
     script_dir = Path(__file__).parent
     project_root = script_dir.parent
 
+    # Add project root to sys.path for imports
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+    # Change to project root directory
+    original_dir = Path.cwd()
+    os.chdir(project_root)
+
     checks: List[Tuple[bool, str, str]] = []
 
     # 1. Python version
@@ -277,8 +286,15 @@ def main():
     print_check(passed, msg)
     checks.append((passed, "Pytest collection", msg))
 
+    # Restore original directory
+    os.chdir(original_dir)
+
     # Summary
     print_header("Summary")
+
+    print(f"Project root: {project_root}")
+    print(f"Working directory: {original_dir}")
+    print()
 
     total_checks = len(checks)
     passed_checks = sum(1 for passed, _, _ in checks if passed)
