@@ -2,6 +2,8 @@
 
 [![Python Version](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![Security](https://img.shields.io/badge/security-phase%201%20completed-green.svg)](FASE1_SEGURIDAD.md)
+[![Architecture](https://img.shields.io/badge/architecture-phase%202%20completed-blue.svg)](FASE2_REFACTORIZACION.md)
+[![Services](https://img.shields.io/badge/services-phase%203%20completed-purple.svg)](FASE3_SERVICIOS.md)
 [![License](https://img.shields.io/badge/license-Internal-orange.svg)]()
 
 Bot de Telegram para automatizar el registro de jornadas laborales en el sistema ViveOrange de empleados de Orange España.
@@ -10,13 +12,28 @@ Bot de Telegram para automatizar el registro de jornadas laborales en el sistema
 
 ## 🎯 Características Principales
 
+### Funcionalidad Core
 - ✅ **Registro automático de jornadas** laborales
 - ✅ **Consulta de registros** semanales (actual y anterior)
 - ✅ **Validación inteligente** de días festivos y vacaciones
 - ✅ **Gestión de teletrabajo** con confirmación opcional
+- ✅ **Informes estadísticos avanzados** con análisis de patrones
+- ✅ **Exportación a JSON** de registros y estadísticas
+
+### Seguridad (Fase 1)
 - ✅ **Credenciales encriptadas** con Fernet
 - ✅ **Logs sanitizados** sin información sensible
-- ✅ **Validación de entradas** robusta
+- ✅ **Validación de entradas** robusta contra XSS e inyección
+- ✅ **Prevención de vulnerabilidades** CVE resueltas
+
+### Arquitectura (Fase 2 & 3)
+- ✅ **Arquitectura en capas** (Models, Services, Repositories)
+- ✅ **Dependency Injection** con ServiceContainer
+- ✅ **Pydantic Settings** para configuración type-safe
+- ✅ **Jerarquía de excepciones** personalizada (22 tipos)
+- ✅ **Manejo centralizado de errores** con mensajes user-friendly
+- ✅ **Notificaciones inteligentes** con rate limiting y retry
+- ✅ **Repositorio de festivos** con caché LRU
 - ✅ **Containerización** con Docker
 
 ---
@@ -83,22 +100,43 @@ Bot de Telegram para automatizar el registro de jornadas laborales en el sistema
 ```
 registrojornada-application-python/
 ├── app/                          # Código fuente de la aplicación
+│   ├── core/                     # 🆕 Dependency Injection (Fase 3)
+│   │   ├── __init__.py
+│   │   └── container.py         # ServiceContainer (Singleton)
+│   ├── models/                   # 🆕 Modelos de datos (Fase 2)
+│   │   ├── __init__.py
+│   │   └── workday.py           # WorkdayRegistration, WeeklyReport (Pydantic)
+│   ├── services/                 # 🆕 Capa de servicios (Fases 2 & 3)
+│   │   ├── __init__.py
+│   │   ├── auth_service.py      # Autenticación ViveOrange
+│   │   ├── hr_service.py        # Registro de jornadas e informes
+│   │   ├── notification_service.py  # Notificaciones Telegram (rate limit)
+│   │   └── report_service.py    # Informes avanzados y estadísticas
+│   ├── repositories/             # 🆕 Repositorios de datos (Fase 2)
+│   │   ├── __init__.py
+│   │   └── holiday_repository.py  # Gestión de festivos (LRU cache)
 │   ├── security/                 # 🆕 Módulos de seguridad (Fase 1)
 │   │   ├── __init__.py
 │   │   └── secrets_manager.py   # Gestión de credenciales encriptadas
-│   ├── utils/                    # 🆕 Utilidades (Fase 1)
+│   ├── utils/                    # 🆕 Utilidades (Fases 1 & 3)
 │   │   ├── __init__.py
 │   │   ├── logger.py            # Logging con sanitización
+│   │   ├── error_handler.py     # 🆕 Manejo centralizado de errores
 │   │   └── validarDay.py        # Validación de fechas
 │   ├── validators/               # 🆕 Validadores (Fase 1)
 │   │   ├── __init__.py
-│   │   └── input_validator.py   # Validación de entradas
-│   ├── bot.py                    # Punto de entrada principal (actualizado)
-│   ├── ViveOrange.py            # Integración con sistema ViveOrange (mejorado)
+│   │   └── input_validator.py   # Validación de entradas (XSS, injection)
+│   ├── exceptions/               # 🆕 Excepciones personalizadas (Fase 3)
+│   │   └── __init__.py          # Jerarquía de 22 excepciones
+│   ├── bot.py                    # 🔄 Punto de entrada principal (refactorizado)
+│   ├── config.py                 # 🆕 Pydantic Settings (Fase 2)
+│   ├── ViveOrange.py            # ⚠️ Legacy (se mantiene por compatibilidad)
 │   ├── DiaValidator.py          # Validación de días laborales
-│   ├── BotTelegramRegistro.py   # Wrapper de API de Telegram
-│   ├── configD.py               # Configuración (horarios, festivos)
+│   ├── BotTelegramRegistro.py   # ⚠️ Legacy wrapper Telegram
+│   ├── configD.py               # ⚠️ Legacy configuración (deprecado)
 │   └── main2.py                 # CLI alternativo
+├── data/                         # 🆕 Datos de configuración (Fase 2)
+│   └── holidays.json            # Festivos nacionales y regionales
 ├── scripts/                      # 🆕 Scripts de utilidad (Fase 1)
 │   └── encrypt_secrets.py       # Script de encriptación de credenciales
 ├── tests/                        # Tests unitarios
@@ -108,17 +146,49 @@ registrojornada-application-python/
 ├── logs/                         # 🆕 Logs (generados automáticamente)
 │   ├── registrojornada.log
 │   └── vive_orange.log
-├── config/                       # Configuración (para futuras fases)
 ├── .env                          # Variables de entorno encriptadas 🔒
 ├── .env.example                  # 🆕 Template de configuración
 ├── .gitignore                    # Archivos ignorados por Git
 ├── Dockerfile                    # Configuración Docker
 ├── docker-compose.yml            # Orquestación Docker
-├── requirements.txt              # Dependencias actualizadas (Fase 1)
+├── requirements.txt              # Dependencias actualizadas
 ├── README.md                     # Este archivo
 ├── ANALISIS_PROYECTO.md          # 🆕 Análisis completo del proyecto
-├── FASE1_SEGURIDAD.md           # 🆕 Documentación técnica Fase 1
-└── RESUMEN_FASE1.md             # 🆕 Resumen ejecutivo Fase 1
+├── FASE1_SEGURIDAD.md           # 🆕 Documentación Fase 1 (Seguridad)
+├── FASE2_REFACTORIZACION.md     # 🆕 Documentación Fase 2 (Arquitectura)
+└── FASE3_SERVICIOS.md           # 🆕 Documentación Fase 3 (Servicios)
+```
+
+### Arquitectura en Capas
+
+```
+┌─────────────────────────────────────────┐
+│         bot.py (Handlers)              │  ← Telegram Bot Handlers
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│      ServiceContainer (DI)             │  ← Dependency Injection
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  Services Layer (Business Logic)       │
+│  • AuthService                          │
+│  • HRService                            │
+│  • NotificationService                  │
+│  • ReportService                        │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  Repositories (Data Access)            │
+│  • HolidayRepository                    │
+└─────────────────────────────────────────┘
+                    ↓
+┌─────────────────────────────────────────┐
+│  Models (Pydantic)                     │
+│  • WorkdayRegistration                  │
+│  • WeeklyReport                         │
+│  • Settings                             │
+└─────────────────────────────────────────┘
 ```
 
 ---
@@ -234,6 +304,160 @@ Ver [FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md) para más detalles.
 
 ---
 
+## 🏗️ Arquitectura de Servicios (Fases 2 & 3 Completadas)
+
+### Dependency Injection Container
+
+El proyecto utiliza un **ServiceContainer** singleton para gestión centralizada de servicios:
+
+```python
+from core import get_container
+
+# Obtener container (singleton global)
+container = get_container()
+
+# Acceder a servicios (lazy initialization)
+notification = container.notification_service
+auth = container.auth_service
+hr = container.hr_service
+report = container.report_service
+error_handler = container.error_handler
+```
+
+### Servicios Implementados
+
+#### 1. NotificationService
+
+**Propósito:** Gestión centralizada de notificaciones Telegram con rate limiting y retry logic
+
+**Características:**
+- ✅ Rate limiting (20 mensajes/minuto)
+- ✅ Retry automático con backoff exponencial (3 intentos)
+- ✅ Plantillas de mensajes (success, error, warning, info)
+- ✅ Fallback a logging si Telegram falla
+- ✅ Mensajes especializados (confirmación de jornada, informes)
+
+**Uso:**
+```python
+# Enviar mensaje básico
+container.notification_service.send_message("Hola", chat_id=123456)
+
+# Mensajes templados
+container.notification_service.send_success("Operación completada", chat_id=123456)
+container.notification_service.send_error(exception, chat_id=123456)
+container.notification_service.send_warning("Advertencia", chat_id=123456)
+
+# Mensajes especializados
+container.notification_service.send_workday_confirmation(registration)
+container.notification_service.send_weekly_report(report)
+```
+
+#### 2. ErrorHandler
+
+**Propósito:** Manejo centralizado de errores con mensajes user-friendly en español
+
+**Características:**
+- ✅ Convierte excepciones técnicas a mensajes comprensibles
+- ✅ Logging automático con contexto
+- ✅ Mapeo específico por tipo de excepción
+- ✅ Emojis descriptivos (❌ error, ⚠️ warning, 🔐 auth)
+
+**Uso:**
+```python
+try:
+    # Operación que puede fallar
+    hr_service.register_workday(date)
+except RegistroJornadaException as e:
+    # Convertir excepción técnica a mensaje user-friendly
+    user_msg = container.error_handler.handle_exception(e, {
+        'user': username,
+        'command': '/dia',
+        'date': date
+    })
+    container.notification_service.send_message(user_msg, chat_id=chat_id)
+```
+
+#### 3. ReportService
+
+**Propósito:** Generación de informes avanzados y análisis estadístico
+
+**Características:**
+- ✅ Informes semanales y mensuales
+- ✅ Estadísticas por tipo de jornada, ubicación, día de semana
+- ✅ Análisis de patrones temporales (hora inicio/fin promedio)
+- ✅ Exportación a JSON con estadísticas
+- ✅ Formateo mejorado para Telegram
+
+**Uso:**
+```python
+# Generar resumen semanal
+summary = container.report_service.generate_weekly_summary(report)
+
+# Calcular estadísticas
+stats = container.report_service.calculate_statistics(registrations)
+# stats contiene:
+# - total_hours, total_days
+# - by_type (presencial, teletrabajo, etc.)
+# - by_location
+# - by_day_of_week
+# - time_patterns (earliest_start, latest_end, avg hours/day)
+
+# Exportar a JSON
+json_report = container.report_service.export_to_json(report, include_statistics=True)
+
+# Formatear para Telegram
+telegram_msg = container.report_service.format_for_telegram(report, include_details=True)
+```
+
+#### 4. AuthService
+
+**Propósito:** Autenticación en sistema ViveOrange con manejo de sesión
+
+**Características:**
+- ✅ Login multi-paso con OAM
+- ✅ Gestión de cookies y sesión
+- ✅ Excepciones específicas (InvalidCredentialsError, OAMRedirectError, SessionExpiredError)
+- ✅ Logging detallado de cada paso
+
+#### 5. HRService
+
+**Propósito:** Registro de jornadas y generación de informes desde ViveOrange
+
+**Características:**
+- ✅ Registro de jornada con validación Pydantic
+- ✅ Generación de informes semanales (actual y anterior)
+- ✅ Parsing robusto de HTML
+- ✅ Excepciones específicas (RegistrationError, HTMLParsingError, ReportGenerationError)
+
+### Jerarquía de Excepciones
+
+El proyecto define **22 excepciones personalizadas** organizadas por categoría:
+
+**Base:**
+- `RegistroJornadaException` - Excepción base con message y details
+
+**Autenticación:**
+- `AuthenticationError`, `InvalidCredentialsError`, `OAMRedirectError`, `SessionExpiredError`
+
+**Servicios HR:**
+- `HRServiceError`, `RegistrationError`, `ReportGenerationError`, `HTMLParsingError`
+
+**Validación:**
+- `ValidationError`, `InvalidDateError`, `InvalidTimeFormatError`, `HolidayValidationError`, `WeekendValidationError`
+
+**Red:**
+- `NetworkError`, `ConnectionTimeoutError`, `ServiceUnavailableError`, `HTTPError`
+
+**Configuración:**
+- `ConfigurationError`, `MissingConfigurationError`, `InvalidConfigurationError`
+
+**Notificaciones:**
+- `NotificationError`, `TelegramSendError`
+
+Ver [FASE3_SERVICIOS.md](FASE3_SERVICIOS.md) para documentación completa.
+
+---
+
 ## 🧪 Testing
 
 ### Ejecutar Tests
@@ -305,12 +529,14 @@ lxml==5.3.0                 # Procesamiento XML/HTML
 pyTelegramBotAPI==4.21.0    # API de Telegram
 python-dotenv==1.0.1        # Variables de entorno
 requests==2.32.3            # Cliente HTTP (sin CVE)
+pydantic==2.10.3            # 🆕 Validación de datos y settings (Fase 2)
+pydantic-settings==2.6.1    # 🆕 Gestión de configuración type-safe (Fase 2)
 ```
 
 ### Security Dependencies
 
 ```txt
-cryptography==42.0.5        # Encriptación Fernet
+cryptography==42.0.5        # Encriptación Fernet (Fase 1)
 ```
 
 ### Development Dependencies (opcional)
@@ -408,16 +634,27 @@ python scripts/encrypt_secrets.py
   - Roadmap de 4 fases
   - Propuestas de mejora detalladas
 
-- **[FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md)** (14KB)
+- **[FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md)** ✅ Completada
   - Implementación técnica de seguridad
-  - Uso de SecretsManager
-  - Uso de SanitizedFormatter
+  - Uso de SecretsManager y encriptación Fernet
+  - Uso de SanitizedFormatter para logs
+  - Validación de entradas con InputValidator
   - Guías de troubleshooting
 
-- **[RESUMEN_FASE1.md](RESUMEN_FASE1.md)** (12KB)
-  - Resumen ejecutivo de Fase 1
-  - Métricas alcanzadas
-  - KPIs y logros
+- **[FASE2_REFACTORIZACION.md](FASE2_REFACTORIZACION.md)** ✅ Completada
+  - Arquitectura en capas (Models, Services, Repositories)
+  - Implementación de Pydantic Settings
+  - AuthService y HRService detallados
+  - HolidayRepository con LRU cache
+  - Modelos de datos Pydantic
+
+- **[FASE3_SERVICIOS.md](FASE3_SERVICIOS.md)** ✅ Completada
+  - ServiceContainer y Dependency Injection
+  - NotificationService con rate limiting y retry
+  - ReportService con análisis estadístico
+  - ErrorHandler centralizado
+  - Jerarquía de 22 excepciones personalizadas
+  - Ejemplos de uso de cada servicio
 
 - **[.env.example](.env.example)**
   - Template de configuración
@@ -436,30 +673,45 @@ python scripts/encrypt_secrets.py
 ## 🗺️ Roadmap
 
 ### ✅ Fase 1: Seguridad (Completada)
-- [x] Gestión segura de credenciales
+- [x] Gestión segura de credenciales con Fernet
 - [x] Sanitización de logs
-- [x] Validación de entradas
-- [x] Actualización de dependencias
+- [x] Validación de entradas contra XSS e inyección
+- [x] Actualización de dependencias (CVE resueltos)
 - [x] Prevención de inyección
 
-### 🔄 Fase 2: Refactorización (Próxima)
-- [ ] Eliminar código duplicado
-- [ ] Reestructurar en capas
-- [ ] Implementar Pydantic Settings
-- [ ] Migrar festivos a JSON
-- [ ] Separar ViveOrange en servicios
+**Documentación:** [FASE1_SEGURIDAD.md](FASE1_SEGURIDAD.md)
 
-### 📅 Fase 3: Service Layer
-- [ ] Crear interfaces de servicios
-- [ ] Implementar HRService
-- [ ] Implementar AuthService
-- [ ] Refactorizar handlers
+### ✅ Fase 2: Refactorización Arquitectónica (Completada)
+- [x] Eliminar código duplicado
+- [x] Reestructurar en capas (Models, Services, Repositories)
+- [x] Implementar Pydantic Settings para configuración type-safe
+- [x] Migrar festivos a JSON con HolidayRepository
+- [x] Separar ViveOrange en AuthService y HRService
+- [x] Crear modelos Pydantic (WorkdayRegistration, WeeklyReport)
+- [x] Implementar Repository pattern con LRU cache
 
-### 🧪 Fase 4: Testing y CI/CD
-- [ ] Tests unitarios (>80% coverage)
-- [ ] GitHub Actions CI
-- [ ] Dockerfile multi-stage
+**Documentación:** [FASE2_REFACTORIZACION.md](FASE2_REFACTORIZACION.md)
+
+### ✅ Fase 3: Service Layer Completa (Completada)
+- [x] Crear ServiceContainer para Dependency Injection
+- [x] Implementar NotificationService con rate limiting
+- [x] Implementar ReportService con análisis estadístico
+- [x] Implementar ErrorHandler centralizado
+- [x] Crear jerarquía de 22 excepciones personalizadas
+- [x] Refactorizar AuthService con excepciones
+- [x] Refactorizar HRService con validación Pydantic
+- [x] Refactorizar bot.py con ServiceContainer
+
+**Documentación:** [FASE3_SERVICIOS.md](FASE3_SERVICIOS.md)
+
+### 🎯 Fase 4: Testing y CI/CD (Próxima)
+- [ ] Tests unitarios completos (>80% coverage)
+- [ ] Tests de integración para servicios
+- [ ] GitHub Actions CI/CD pipeline
+- [ ] Dockerfile multi-stage para optimización
 - [ ] Automatización de deployment
+- [ ] Pre-commit hooks
+- [ ] Code coverage reports
 
 Ver [ANALISIS_PROYECTO.md](ANALISIS_PROYECTO.md) para detalles completos.
 
@@ -542,24 +794,30 @@ Para obtener ayuda:
 ## 📈 Estado del Proyecto
 
 ```
-Version: 2.0 (Post Fase 1)
-Estado: 🟢 PRODUCTION-READY (Seguridad)
-Última actualización: 2025-12-07
+Version: 4.0 (Post Fase 3)
+Estado: 🟢 PRODUCTION-READY (Arquitectura Completa)
+Última actualización: 2025-12-08
 
+Fases completadas: 3/4 (75%)
 Vulnerabilidades: 0
-Cobertura de tests: ~40%
+Cobertura de tests: ~40% (mejorar en Fase 4)
 Nivel de seguridad: ALTO
+Arquitectura: Enterprise-grade
 ```
 
 ### Métricas
 
 | Métrica | Valor |
 |---------|-------|
-| Líneas de código | ~3,000 |
-| Archivos Python | 16 |
-| Tests | 8 |
-| Documentación | ~100KB |
-| Dependencias | 6 core + 1 security |
+| Líneas de código | ~6,000 |
+| Archivos Python | 27 |
+| Servicios | 5 (Auth, HR, Notification, Report, Error) |
+| Modelos Pydantic | 3 (Settings, WorkdayRegistration, WeeklyReport) |
+| Excepciones personalizadas | 22 |
+| Repositorios | 1 (HolidayRepository) |
+| Tests | 8 (expandir en Fase 4) |
+| Documentación | ~180KB (3 fases) |
+| Dependencias | 7 core + 1 security |
 
 ---
 
@@ -584,13 +842,30 @@ Antes de desplegar:
 
 ## 🎓 Aprendizajes y Mejores Prácticas
 
-### Implementadas en Fase 1
+### Fase 1: Seguridad
 
 - ✅ **Principio de mínimo privilegio** - Credenciales encriptadas
 - ✅ **Defense in depth** - Múltiples capas de seguridad
 - ✅ **Secure by default** - Sanitización automática
 - ✅ **Fail securely** - Validación con excepciones claras
 - ✅ **Don't trust input** - Validación exhaustiva
+
+### Fase 2: Arquitectura
+
+- ✅ **Separation of Concerns** - Capas bien definidas (Models, Services, Repos)
+- ✅ **Single Responsibility** - Cada servicio con una responsabilidad clara
+- ✅ **Type Safety** - Pydantic para validación en tiempo de ejecución
+- ✅ **DRY (Don't Repeat Yourself)** - Código reutilizable en servicios
+- ✅ **Repository Pattern** - Abstracción de acceso a datos
+
+### Fase 3: Servicios
+
+- ✅ **Dependency Injection** - ServiceContainer para gestión centralizada
+- ✅ **Error Handling** - Excepciones personalizadas y mensajes user-friendly
+- ✅ **Rate Limiting** - Prevención de abuse en NotificationService
+- ✅ **Retry Logic** - Resiliencia con backoff exponencial
+- ✅ **Observability** - Logging estructurado con contexto
+- ✅ **Graceful Degradation** - Fallbacks cuando servicios externos fallan
 
 ### Recomendaciones
 
@@ -599,9 +874,12 @@ Antes de desplegar:
 3. Rotar credenciales trimestralmente
 4. Hacer backup de `ENCRYPTION_KEY`
 5. Mantener documentación actualizada
+6. Usar ServiceContainer en toda la aplicación
+7. Capturar excepciones específicas, no genéricas
+8. Validar datos con Pydantic antes de procesarlos
 
 ---
 
-**Última actualización:** 2025-12-07
-**Versión:** 2.0
-**Estado:** 🔒 Seguro y Production-Ready
+**Última actualización:** 2025-12-08
+**Versión:** 4.0 (Post Fase 3)
+**Estado:** 🟢 Enterprise-grade Architecture - Production-Ready
