@@ -99,13 +99,13 @@ class EnvironmentValidator:
         self.checks_total += 1
         if passed:
             self.checks_passed += 1
-            status = f"{Colors.OKGREEN}✓ PASS{Colors.ENDC}"
+            status = f"{Colors.OKGREEN}[OK]{Colors.ENDC}"
         else:
-            status = f"{Colors.FAIL}✗ FAIL{Colors.ENDC}"
+            status = f"{Colors.FAIL}[FAIL]{Colors.ENDC}"
 
         print(f"{status} {name}")
         if message and self.verbose:
-            print(f"      {Colors.OKCYAN}→{Colors.ENDC} {message}")
+            print(f"      {Colors.OKCYAN}->{Colors.ENDC} {message}")
 
     def check_python_version(self) -> bool:
         """Verificar versión de Python."""
@@ -421,20 +421,20 @@ class EnvironmentValidator:
         self.print_header("RESUMEN DE VALIDACIÓN")
 
         print(f"{Colors.BOLD}Checks ejecutados:{Colors.ENDC} {self.checks_total}")
-        print(f"{Colors.OKGREEN}Checks pasados:{Colors.ENDC} {self.checks_passed}")
-        print(f"{Colors.FAIL}Checks fallados:{Colors.ENDC} {self.checks_total - self.checks_passed}")
+        print(f"{Colors.OKGREEN}Checks pasados:{Colors.ENDC}   {self.checks_passed}")
+        print(f"{Colors.FAIL}Checks fallados:{Colors.ENDC}  {self.checks_total - self.checks_passed}")
 
         if self.warnings:
-            print(f"\n{Colors.WARNING}{Colors.BOLD}⚠ ADVERTENCIAS ({len(self.warnings)}):{Colors.ENDC}")
+            print(f"\n{Colors.WARNING}{Colors.BOLD}ADVERTENCIAS ({len(self.warnings)}):{Colors.ENDC}")
             for warning in self.warnings:
-                print(f"  {Colors.WARNING}•{Colors.ENDC} {warning}")
+                print(f"  {Colors.WARNING}*{Colors.ENDC} {warning}")
 
         if self.errors:
-            print(f"\n{Colors.FAIL}{Colors.BOLD}✗ ERRORES ({len(self.errors)}):{Colors.ENDC}")
+            print(f"\n{Colors.FAIL}{Colors.BOLD}ERRORES ({len(self.errors)}):{Colors.ENDC}")
             for error in self.errors:
-                print(f"  {Colors.FAIL}•{Colors.ENDC} {error}")
+                print(f"  {Colors.FAIL}*{Colors.ENDC} {error}")
 
-            print(f"\n{Colors.FAIL}{Colors.BOLD}El entorno NO está listo para ejecutar el bot.{Colors.ENDC}")
+            print(f"\n{Colors.FAIL}{Colors.BOLD}El entorno NO esta listo para ejecutar el bot.{Colors.ENDC}")
             print(f"\n{Colors.BOLD}Acciones sugeridas:{Colors.ENDC}")
             print(f"  1. Instalar dependencias: {Colors.OKCYAN}pip install -r requirements.txt{Colors.ENDC}")
             print(f"  2. Configurar credenciales: {Colors.OKCYAN}python scripts/encrypt_secrets.py{Colors.ENDC}")
@@ -443,7 +443,7 @@ class EnvironmentValidator:
 
             return False
         else:
-            print(f"\n{Colors.OKGREEN}{Colors.BOLD}✓ El entorno está correctamente configurado!{Colors.ENDC}")
+            print(f"\n{Colors.OKGREEN}{Colors.BOLD}[OK] El entorno esta correctamente configurado!{Colors.ENDC}")
             print(f"\n{Colors.BOLD}Puedes ejecutar el bot:{Colors.ENDC}")
             print(f"  {Colors.OKCYAN}python app/bot.py{Colors.ENDC}")
 
