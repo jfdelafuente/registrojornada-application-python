@@ -51,8 +51,8 @@ Bot de Telegram para automatizar el registro de jornadas laborales en el sistema
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/jfdelafuente/registrojornada-application-python.git
    cd registrojornada-application-python
+   git clone https://github.com/jfdelafuente/registrojornada-application-python.git
    ```
 
 2. **Crear entorno virtual (recomendado)**
@@ -89,7 +89,29 @@ Bot de Telegram para automatizar el registro de jornadas laborales en el sistema
 
    Copie el output generado al archivo `.env`
 
-5. **Ejecutar el bot**
+5. **Validar el entorno** ✅ (Recomendado)
+
+   **NUEVO:** Antes de ejecutar el bot, valida que todo esté correctamente configurado:
+
+   ```bash
+   # Validación completa del entorno
+   python scripts/validate_environment.py
+
+   # Validación con detalles
+   python scripts/validate_environment.py --verbose
+   ```
+
+   El script verificará:
+   - ✅ Versión de Python (3.11+)
+   - ✅ Dependencias instaladas y versiones
+   - ✅ Variables de entorno encriptadas
+   - ✅ Archivos de configuración
+   - ✅ Estructura de directorios
+   - ✅ Permisos de escritura en logs/
+   - ✅ Módulos del proyecto importables
+   - ✅ Conectividad básica (Telegram API)
+
+6. **Ejecutar el bot**
    ```bash
    python app/bot.py
    ```
@@ -138,8 +160,9 @@ registrojornada-application-python/
 │   └── main2.py                 # CLI alternativo
 ├── data/                         # 🆕 Datos de configuración (Fase 2)
 │   └── holidays.json            # Festivos nacionales y regionales
-├── scripts/                      # 🆕 Scripts de utilidad (Fase 1)
-│   └── encrypt_secrets.py       # Script de encriptación de credenciales
+├── scripts/                      # 🆕 Scripts de utilidad (Fases 1-3)
+│   ├── encrypt_secrets.py       # Script de encriptación de credenciales
+│   └── validate_environment.py  # 🆕 Validador de entorno (Fase 3)
 ├── tests/                        # Tests unitarios
 │   ├── test_bot_telegram_registro.py
 │   ├── test_dias_validator.py
