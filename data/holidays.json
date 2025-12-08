@@ -1,0 +1,330 @@
+{
+  "info": {
+    "description": "Festivos nacionales y regionales de España",
+    "years": ["2024", "2025"],
+    "last_updated": "2025-12-08"
+  },
+  "national": [
+    {
+      "date": "2024-01-01",
+      "name": "Año Nuevo",
+      "description": "Primer día del año"
+    },
+    {
+      "date": "2024-01-06",
+      "name": "Epifanía del Señor",
+      "description": "Día de Reyes"
+    },
+    {
+      "date": "2024-03-29",
+      "name": "Viernes Santo",
+      "description": "Semana Santa"
+    },
+    {
+      "date": "2024-05-01",
+      "name": "Fiesta del Trabajo",
+      "description": "Día Internacional de los Trabajadores"
+    },
+    {
+      "date": "2024-08-15",
+      "name": "Asunción de la Virgen",
+      "description": "Festividad mariana"
+    },
+    {
+      "date": "2024-10-12",
+      "name": "Fiesta Nacional de España",
+      "description": "Día de la Hispanidad"
+    },
+    {
+      "date": "2024-11-01",
+      "name": "Todos los Santos",
+      "description": "Día de difuntos"
+    },
+    {
+      "date": "2024-12-06",
+      "name": "Día de la Constitución Española",
+      "description": "Constitución de 1978"
+    },
+    {
+      "date": "2024-12-25",
+      "name": "Navidad",
+      "description": "Nacimiento de Jesús"
+    },
+    {
+      "date": "2025-01-01",
+      "name": "Año Nuevo",
+      "description": "Primer día del año"
+    },
+    {
+      "date": "2025-01-06",
+      "name": "Epifanía del Señor",
+      "description": "Día de Reyes"
+    },
+    {
+      "date": "2025-04-18",
+      "name": "Viernes Santo",
+      "description": "Semana Santa"
+    },
+    {
+      "date": "2025-05-01",
+      "name": "Fiesta del Trabajo",
+      "description": "Día Internacional de los Trabajadores"
+    },
+    {
+      "date": "2025-08-15",
+      "name": "Asunción de la Virgen",
+      "description": "Festividad mariana"
+    },
+    {
+      "date": "2025-10-12",
+      "name": "Fiesta Nacional de España",
+      "description": "Día de la Hispanidad"
+    },
+    {
+      "date": "2025-11-01",
+      "name": "Todos los Santos",
+      "description": "Día de difuntos"
+    },
+    {
+      "date": "2025-12-06",
+      "name": "Día de la Constitución Española",
+      "description": "Constitución de 1978"
+    },
+    {
+      "date": "2025-12-08",
+      "name": "Inmaculada Concepción",
+      "description": "Festividad mariana"
+    },
+    {
+      "date": "2025-12-25",
+      "name": "Navidad",
+      "description": "Nacimiento de Jesús"
+    }
+  ],
+  "regional": {
+    "madrid": [
+      {
+        "date": "2024-03-28",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Madrid"
+      },
+      {
+        "date": "2024-05-02",
+        "name": "Fiesta de la Comunidad de Madrid",
+        "description": "Dos de Mayo"
+      },
+      {
+        "date": "2024-12-09",
+        "name": "Puente de la Constitución",
+        "description": "Festivo autonómico"
+      },
+      {
+        "date": "2025-04-17",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Madrid"
+      },
+      {
+        "date": "2025-05-02",
+        "name": "Fiesta de la Comunidad de Madrid",
+        "description": "Dos de Mayo"
+      }
+    ],
+    "valencia": [
+      {
+        "date": "2024-03-19",
+        "name": "San José",
+        "description": "Festividad valenciana"
+      },
+      {
+        "date": "2024-03-28",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Valencia"
+      },
+      {
+        "date": "2024-04-01",
+        "name": "Lunes de Pascua",
+        "description": "Semana Santa - Valencia"
+      },
+      {
+        "date": "2024-06-24",
+        "name": "San Juan",
+        "description": "Festividad valenciana"
+      },
+      {
+        "date": "2024-10-09",
+        "name": "Día de la Comunidad Valenciana",
+        "description": "9 de Octubre"
+      },
+      {
+        "date": "2025-03-19",
+        "name": "San José",
+        "description": "Festividad valenciana"
+      },
+      {
+        "date": "2025-04-17",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Valencia"
+      },
+      {
+        "date": "2025-04-21",
+        "name": "Lunes de Pascua",
+        "description": "Semana Santa - Valencia"
+      },
+      {
+        "date": "2025-06-24",
+        "name": "San Juan",
+        "description": "Festividad valenciana"
+      },
+      {
+        "date": "2025-10-09",
+        "name": "Día de la Comunidad Valenciana",
+        "description": "9 de Octubre"
+      }
+    ],
+    "cataluna": [
+      {
+        "date": "2024-04-01",
+        "name": "Lunes de Pascua",
+        "description": "Semana Santa - Cataluña"
+      },
+      {
+        "date": "2024-06-24",
+        "name": "San Juan",
+        "description": "Sant Joan"
+      },
+      {
+        "date": "2024-09-11",
+        "name": "Diada de Cataluña",
+        "description": "Fiesta Nacional de Cataluña"
+      },
+      {
+        "date": "2024-12-26",
+        "name": "San Esteban",
+        "description": "Sant Esteve"
+      },
+      {
+        "date": "2025-04-21",
+        "name": "Lunes de Pascua",
+        "description": "Semana Santa - Cataluña"
+      },
+      {
+        "date": "2025-06-24",
+        "name": "San Juan",
+        "description": "Sant Joan"
+      },
+      {
+        "date": "2025-09-11",
+        "name": "Diada de Cataluña",
+        "description": "Fiesta Nacional de Cataluña"
+      },
+      {
+        "date": "2025-12-26",
+        "name": "San Esteban",
+        "description": "Sant Esteve"
+      }
+    ],
+    "andalucia": [
+      {
+        "date": "2024-02-28",
+        "name": "Día de Andalucía",
+        "description": "Fiesta autonómica"
+      },
+      {
+        "date": "2024-03-28",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Andalucía"
+      },
+      {
+        "date": "2025-02-28",
+        "name": "Día de Andalucía",
+        "description": "Fiesta autonómica"
+      },
+      {
+        "date": "2025-04-17",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Andalucía"
+      }
+    ],
+    "pais_vasco": [
+      {
+        "date": "2024-03-28",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - País Vasco"
+      },
+      {
+        "date": "2024-04-01",
+        "name": "Lunes de Pascua",
+        "description": "Semana Santa - País Vasco"
+      },
+      {
+        "date": "2024-07-25",
+        "name": "Santiago Apóstol",
+        "description": "Patrón de España"
+      },
+      {
+        "date": "2024-10-25",
+        "name": "Día del País Vasco",
+        "description": "Euskadi Eguna"
+      },
+      {
+        "date": "2025-04-17",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - País Vasco"
+      },
+      {
+        "date": "2025-04-21",
+        "name": "Lunes de Pascua",
+        "description": "Semana Santa - País Vasco"
+      },
+      {
+        "date": "2025-07-25",
+        "name": "Santiago Apóstol",
+        "description": "Patrón de España"
+      },
+      {
+        "date": "2025-10-25",
+        "name": "Día del País Vasco",
+        "description": "Euskadi Eguna"
+      }
+    ],
+    "galicia": [
+      {
+        "date": "2024-03-28",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Galicia"
+      },
+      {
+        "date": "2024-05-17",
+        "name": "Día de las Letras Gallegas",
+        "description": "Día das Letras Galegas"
+      },
+      {
+        "date": "2024-07-25",
+        "name": "Día de Galicia",
+        "description": "Santiago Apóstol"
+      },
+      {
+        "date": "2025-04-17",
+        "name": "Jueves Santo",
+        "description": "Semana Santa - Galicia"
+      },
+      {
+        "date": "2025-05-17",
+        "name": "Día de las Letras Gallegas",
+        "description": "Día das Letras Galegas"
+      },
+      {
+        "date": "2025-07-25",
+        "name": "Día de Galicia",
+        "description": "Santiago Apóstol"
+      }
+    ]
+  },
+  "notes": [
+    "Los festivos regionales varían según la comunidad autónoma",
+    "Cada municipio puede tener hasta 2 festivos locales adicionales",
+    "Las fechas de Semana Santa cambian cada año (móviles)",
+    "Algunos festivos que caen en domingo se trasladan al lunes",
+    "Este archivo debe actualizarse anualmente con los nuevos festivos"
+  ]
+}

@@ -267,7 +267,56 @@ EMPLOYEE_CODE_ENCRYPTED=gAAAAABl...
 
 Ver [.env.example](.env.example) para más detalles.
 
-### Configuración de Horarios (configD.py)
+### Festivos y Días No Laborables (data/holidays.json)
+
+**🆕 Fase 2:** Los festivos ahora se gestionan mediante un archivo JSON estructurado.
+
+El archivo `data/holidays.json` contiene:
+- **Festivos nacionales** de España (2024-2025)
+- **Festivos regionales** por comunidad autónoma:
+  - Madrid
+  - Valencia
+  - Cataluña
+  - Andalucía
+  - País Vasco
+  - Galicia
+- **Metadatos** (última actualización, notas)
+
+**Estructura del archivo:**
+```json
+{
+  "national": [
+    {
+      "date": "2025-01-01",
+      "name": "Año Nuevo",
+      "description": "Primer día del año"
+    }
+  ],
+  "regional": {
+    "madrid": [
+      {
+        "date": "2025-05-02",
+        "name": "Fiesta de la Comunidad de Madrid",
+        "description": "Dos de Mayo"
+      }
+    ]
+  }
+}
+```
+
+**Ventajas de este approach:**
+- ✅ Fácil actualización anual sin modificar código
+- ✅ Soporte multi-regional
+- ✅ Versionable en Git
+- ✅ Lectura eficiente con LRU cache (HolidayRepository)
+
+**Actualizar festivos:**
+1. Editar `data/holidays.json` con los nuevos festivos del año
+2. Mantener formato JSON válido
+3. Actualizar campo `last_updated`
+4. El bot recargará automáticamente los cambios
+
+### Configuración de Horarios (configD.py) ⚠️ Legacy
 
 ```python
 # Horarios de trabajo
