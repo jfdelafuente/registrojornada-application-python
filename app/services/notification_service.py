@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 import telebot
 from telebot.apihelper import ApiException
 
-from models.workday import WorkdayRegistration, WeeklyReport
-from exceptions import TelegramSendError, RegistroJornadaException
+from app.models.workday import WorkdayRegistration, WeeklyReport
+from app.exceptions import TelegramSendError, RegistroJornadaException
 
 logger = logging.getLogger(__name__)
 

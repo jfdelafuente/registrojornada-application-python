@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 from typing import Dict, Optional
 import logging
 import requests
-from security.secrets_manager import SecretsManager
-from config import get_settings
-from exceptions import (
+from app.security.secrets_manager import SecretsManager
+from app.config import get_settings
+from app.exceptions import (
     AuthenticationError,
     InvalidCredentialsError,
     OAMRedirectError,

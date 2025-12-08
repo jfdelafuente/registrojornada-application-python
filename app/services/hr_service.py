@@ -5,9 +5,10 @@ from datetime import date, datetime, timedelta
 from typing import Tuple, List
 import logging
 import requests
-from config import get_settings
-from models.workday import WorkdayRegistration, WeeklyReport, WorkdayTypeEnum
-from exceptions import (
+from app.config import get_settings
+from app.models.workday import WorkdayRegistration, WeeklyReport
+from app.models.enums import WorkdayTypeEnum
+from app.exceptions import (
     RegistrationError,
     ReportGenerationError,
     HTMLParsingError,

@@ -5,8 +5,9 @@ from datetime import date, datetime, timedelta
 from typing import List, Dict, Any
 import logging
 
-from models.workday import WorkdayRegistration, WeeklyReport, WorkdayTypeEnum
-from config import get_settings
+from app.models.workday import WorkdayRegistration, WeeklyReport
+from app.models.enums import WorkdayTypeEnum
+from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
