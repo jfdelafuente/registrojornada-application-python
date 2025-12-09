@@ -17,6 +17,12 @@ Este directorio contiene toda la documentación técnica del proyecto organizada
   - Comandos esenciales
   - Troubleshooting común
 
+- **[GUIA_CALIDAD_CODIGO.md](GUIA_CALIDAD_CODIGO.md)** - 🎨 Guía completa de herramientas de calidad de código
+  - Configuración de Black, isort, Flake8, Mypy
+  - Validación automática del entorno
+  - Pre-commit hooks
+  - Flujo de trabajo diario
+
 ### Documentación por Fases
 
 #### [Fase 1: Seguridad y Logging](fases/FASE1_SEGURIDAD.md)
@@ -71,6 +77,8 @@ docs/
 ├── README.md                           # Este archivo (índice)
 ├── ANALISIS_PROYECTO.md                # Análisis técnico completo
 ├── NEXT_STEPS.md                       # Roadmap de fases futuras
+├── GUIA_TESTING.md                     # Guía de testing paso a paso
+├── GUIA_CALIDAD_CODIGO.md              # Guía de calidad de código
 ├── fases/
 │   ├── FASE1_SEGURIDAD.md             # Fase 1: Seguridad
 │   ├── FASE2_REFACTORIZACION.md       # Fase 2: Arquitectura
@@ -134,12 +142,14 @@ docs/
 - Excepciones → `fases/FASE3_SERVICIOS.md`
 
 ### Testing
-- Ejecutar tests → `fases/FASE4_TESTING.md`
+
+- Ejecutar tests → `GUIA_TESTING.md`, `fases/FASE4_TESTING.md`
 - Escribir tests → `fases/FASE4_TESTING.md`
 - CI/CD pipeline → `fases/FASE4_TESTING.md`
-- Code quality → `fases/FASE4_TESTING.md`
+- Code quality → `GUIA_CALIDAD_CODIGO.md`, `fases/FASE4_TESTING.md`
 
 ### Desarrollo
+
 - Setup inicial → `README.md` (raíz)
 - Próximas tareas → `NEXT_STEPS.md`
 - Decisiones pendientes → `NEXT_STEPS.md`
@@ -225,13 +235,24 @@ Ver [NEXT_STEPS.md](NEXT_STEPS.md) para roadmap completo.
 
 ## 📝 Historial de Cambios
 
+### 2025-12-09
+
+- ✅ Creación de GUIA_CALIDAD_CODIGO.md con documentación completa de herramientas
+- ✅ Script de validación validate_quality_tools.py con 25+ checks
+- ✅ Scripts de automatización run_quality_checks.bat/sh
+- ✅ Scripts de auto-fix quick_fix_quality.bat/sh
+- ✅ Actualización del índice de documentación
+
 ### 2025-12-08
+
 - ✅ Reorganización completa de documentación
 - ✅ Creación de estructura docs/
 - ✅ Movimiento de archivos a subdirectorios
 - ✅ Creación de este índice
+- ✅ GUIA_TESTING.md con validación automática
 
 ### 2025-12-07
+
 - ✅ Fases 1, 2, 3 documentadas
 - ✅ ANALISIS_PROYECTO.md creado
 
@@ -243,6 +264,6 @@ Para preguntas sobre la documentación, abrir un issue en GitHub o contactar al 
 
 ---
 
-**Última actualización**: 2025-12-08
-**Versión documentación**: 2.0
+**Última actualización**: 2025-12-09
+**Versión documentación**: 2.1
 **Estado proyecto**: Fase 4 completada ✅

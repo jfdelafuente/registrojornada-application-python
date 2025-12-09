@@ -1,0 +1,36 @@
+[flake8]
+# Flake8 configuration for RegistroJornada Bot
+
+# Maximum line length
+max-line-length = 100
+
+# Exclude patterns
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    build,
+    dist,
+    *.egg-info,
+    .pytest_cache,
+    htmlcov,
+    .mypy_cache
+
+# Ignore specific error codes
+ignore =
+    # Whitespace before ':' (conflicts with black)
+    E203,
+    # Line too long (handled by black)
+    E501,
+    # Line break before binary operator (conflicts with black)
+    W503
+
+# Maximum complexity
+max-complexity = 10
+
+# Show source code for errors
+show-source = true
+
+# Show pep8 error code
+show-pep8 = true
