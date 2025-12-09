@@ -23,6 +23,12 @@ Este directorio contiene toda la documentación técnica del proyecto organizada
   - Pre-commit hooks
   - Flujo de trabajo diario
 
+- **[GUIA_GIT.md](GUIA_GIT.md)** - 🔀 Guía completa de Git y control de versiones
+  - Comandos más comunes y utilizados
+  - Flujos de trabajo típicos (features, bugfixes, hotfixes)
+  - Resolución de conflictos
+  - Buenas prácticas y troubleshooting
+
 ### Documentación por Fases
 
 #### [Fase 1: Seguridad y Logging](fases/FASE1_SEGURIDAD.md)
@@ -72,13 +78,14 @@ Ver [archive/](archive/) para documentación legacy y versiones antiguas.
 
 ## 🗂️ Estructura de Documentación
 
-```
+```text
 docs/
 ├── README.md                           # Este archivo (índice)
 ├── ANALISIS_PROYECTO.md                # Análisis técnico completo
 ├── NEXT_STEPS.md                       # Roadmap de fases futuras
 ├── GUIA_TESTING.md                     # Guía de testing paso a paso
 ├── GUIA_CALIDAD_CODIGO.md              # Guía de calidad de código
+├── GUIA_GIT.md                         # Guía de Git y control de versiones
 ├── fases/
 │   ├── FASE1_SEGURIDAD.md             # Fase 1: Seguridad
 │   ├── FASE2_REFACTORIZACION.md       # Fase 2: Arquitectura
@@ -153,6 +160,13 @@ docs/
 - Setup inicial → `README.md` (raíz)
 - Próximas tareas → `NEXT_STEPS.md`
 - Decisiones pendientes → `NEXT_STEPS.md`
+
+### Git y Control de Versiones
+
+- Comandos básicos → `GUIA_GIT.md`
+- Flujos de trabajo → `GUIA_GIT.md`
+- Resolución de conflictos → `GUIA_GIT.md`
+- Buenas prácticas → `GUIA_GIT.md`
 
 ---
 
@@ -241,6 +255,8 @@ Ver [NEXT_STEPS.md](NEXT_STEPS.md) para roadmap completo.
 - ✅ Script de validación validate_quality_tools.py con 25+ checks
 - ✅ Scripts de automatización run_quality_checks.bat/sh
 - ✅ Scripts de auto-fix quick_fix_quality.bat/sh
+- ✅ Creación de GUIA_GIT.md con comandos y flujos de trabajo
+- ✅ Formateo automático del código con Black e isort
 - ✅ Actualización del índice de documentación
 
 ### 2025-12-08
