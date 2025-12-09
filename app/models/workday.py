@@ -1,8 +1,11 @@
 """Models for workday registration and reporting."""
 
-from datetime import date as Date, datetime
+from datetime import date as Date
+from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, field_validator, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator
+
 from .enums import WorkdayTypeEnum
 
 # Alias for backward compatibility
@@ -21,28 +24,23 @@ class WorkdayRegistration(BaseModel):
     start_time: str = Field(..., description="Start time (HH:MM)")
     end_time: str = Field(..., description="End time (HH:MM)")
     workday_type: WorkdayTypeEnum = Field(
-        default=WorkdayTypeEnum.TELEWORK,
-        description="Type of workday"
+        default=WorkdayTypeEnum.TELEWORK, description="Type of workday"
     )
     location: Optional[str] = Field(
-        default=None,
-        description="Work location (e.g., 'La Finca', 'Home')"
+        default=None, description="Work location (e.g., 'La Finca', 'Home')"
     )
     success: bool = Field(default=False, description="Registration success status")
     message: str = Field(default="", description="Status message")
-    hours_worked: Optional[float] = Field(
-        default=None,
-        description="Total hours worked"
-    )
+    hours_worked: Optional[float] = Field(default=None, description="Total hours worked")
 
-    @field_validator('start_time', 'end_time')
+    @field_validator("start_time", "end_time")
     @classmethod
     def validate_time_format(cls, v: str) -> str:
         """Validate time format is HH:MM."""
         if not v:
             return v
         try:
-            datetime.strptime(v, '%H:%M')
+            datetime.strptime(v, "%H:%M")
             return v
         except ValueError:
             raise ValueError(f"Time must be in HH:MM format, got: {v}")
@@ -77,7 +75,7 @@ class WorkdayRegistration(BaseModel):
             WorkdayTypeEnum.VACATION: "🏖️",
             WorkdayTypeEnum.HOLIDAY: "🎉",
             WorkdayTypeEnum.SICK_LEAVE: "🤒",
-            WorkdayTypeEnum.PERSONAL_DAY: "📅"
+            WorkdayTypeEnum.PERSONAL_DAY: "📅",
         }
 
         emoji = type_emoji.get(self.workday_type, "📋")
@@ -93,11 +91,7 @@ class WorkdayRegistration(BaseModel):
 
         return msg
 
-    model_config = ConfigDict(
-        json_encoders={
-            Date: lambda v: v.strftime("%d/%m/%Y")
-        }
-    )
+    model_config = ConfigDict(json_encoders={Date: lambda v: v.strftime("%d/%m/%Y")})
 
 
 class WeeklyReport(BaseModel):
@@ -114,8 +108,7 @@ class WeeklyReport(BaseModel):
     office_days: int = Field(default=0, description="Office days")
     total_hours: float = Field(default=0.0, description="Total hours worked")
     registrations: list[WorkdayRegistration] = Field(
-        default_factory=list,
-        description="List of daily registrations"
+        default_factory=list, description="List of daily registrations"
     )
 
     def add_registration(self, registration: WorkdayRegistration):
@@ -144,7 +137,9 @@ class WeeklyReport(BaseModel):
             Formatted message string with markdown
         """
         msg = f"📊 *Informe Semanal*\n"
-        msg += f"📅 {self.start_date.strftime('%d/%m/%Y')} - {self.end_date.strftime('%d/%m/%Y')}\n\n"
+        msg += (
+            f"📅 {self.start_date.strftime('%d/%m/%Y')} - {self.end_date.strftime('%d/%m/%Y')}\n\n"
+        )
 
         msg += f"*Resumen:*\n"
         msg += f"• Días trabajados: {self.total_days}\n"
@@ -162,8 +157,4 @@ class WeeklyReport(BaseModel):
 
         return msg
 
-    model_config = ConfigDict(
-        json_encoders={
-            Date: lambda v: v.strftime("%d/%m/%Y")
-        }
-    )
+    model_config = ConfigDict(json_encoders={Date: lambda v: v.strftime("%d/%m/%Y")})

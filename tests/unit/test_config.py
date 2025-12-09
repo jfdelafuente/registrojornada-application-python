@@ -24,9 +24,7 @@ class TestSettings:
     def test_directories_created(self, temp_dir):
         """Test that directories are created automatically."""
         settings = Settings(
-            base_dir=temp_dir,
-            logs_dir=temp_dir / "logs",
-            data_dir=temp_dir / "data"
+            base_dir=temp_dir, logs_dir=temp_dir / "logs", data_dir=temp_dir / "data"
         )
 
         assert settings.logs_dir.exists()
@@ -36,10 +34,7 @@ class TestSettings:
 
     def test_get_log_file_path(self, temp_dir):
         """Test get_log_file_path method."""
-        settings = Settings(
-            base_dir=temp_dir,
-            logs_dir=temp_dir / "logs"
-        )
+        settings = Settings(base_dir=temp_dir, logs_dir=temp_dir / "logs")
 
         log_path = settings.get_log_file_path("test")
         assert log_path == temp_dir / "logs" / "test.log"
@@ -47,10 +42,7 @@ class TestSettings:
 
     def test_get_data_file_path(self, temp_dir):
         """Test get_data_file_path method."""
-        settings = Settings(
-            base_dir=temp_dir,
-            data_dir=temp_dir / "data"
-        )
+        settings = Settings(base_dir=temp_dir, data_dir=temp_dir / "data")
 
         data_path = settings.get_data_file_path("holidays.json")
         assert data_path == temp_dir / "data" / "holidays.json"
@@ -85,17 +77,12 @@ class TestSettings:
 
     def test_holidays_file_path(self, temp_dir):
         """Test holidays file path configuration."""
-        settings = Settings(
-            base_dir=temp_dir,
-            data_dir=temp_dir / "data"
-        )
+        settings = Settings(base_dir=temp_dir, data_dir=temp_dir / "data")
 
         expected_path = temp_dir / "data" / "holidays.json"
         # The default factory will use __file__, so we need to override
         settings_with_override = Settings(
-            base_dir=temp_dir,
-            data_dir=temp_dir / "data",
-            holidays_file=expected_path
+            base_dir=temp_dir, data_dir=temp_dir / "data", holidays_file=expected_path
         )
 
         assert settings_with_override.holidays_file == expected_path

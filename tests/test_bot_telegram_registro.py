@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+
 from BotTelegramRegistro import BotTelegramRegistro
 
 
@@ -9,16 +10,8 @@ class BotTelegramRegistroTestCase(unittest.TestCase):
         # Configurar el comportamiento simulado de requests.get
         mock_response = {
             "result": [
-                {
-                    "message": {
-                        "chat": {"id": 123456789, "username": "usuario1"}
-                    }
-                },
-                {
-                    "message": {
-                        "chat": {"id": 987654321, "username": "usuario2"}
-                    }
-                }
+                {"message": {"chat": {"id": 123456789, "username": "usuario1"}}},
+                {"message": {"chat": {"id": 987654321, "username": "usuario2"}}},
             ]
         }
         mock_get.return_value.json.return_value = mock_response

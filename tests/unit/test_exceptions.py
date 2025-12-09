@@ -13,7 +13,7 @@ from app.exceptions import (
     HTMLParsingError,
     InvalidDateError,
     HolidayValidationError,
-    NotificationError
+    NotificationError,
 )
 
 
@@ -109,7 +109,7 @@ class TestExceptionCatching:
             NetworkError("network"),
             RegistrationError("reg"),
             HTMLParsingError("parse"),
-            NotificationError("notify")
+            NotificationError("notify"),
         ]
 
         for exc in exceptions_to_test:

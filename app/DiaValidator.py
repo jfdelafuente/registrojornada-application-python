@@ -3,8 +3,9 @@
 import logging
 from datetime import date, datetime, timedelta
 from typing import Tuple
-from repositories.holiday_repository import HolidayRepository
+
 from config import get_settings
+from repositories.holiday_repository import HolidayRepository
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +21,9 @@ def validar_dia(day: str) -> date:
         Parsed date object
     """
     dia = date.today()
-    if day == 'HOY':
+    if day == "HOY":
         return dia
-    elif day == 'AYER':
+    elif day == "AYER":
         ayer = dia - timedelta(days=1)
         return ayer
     else:
@@ -52,7 +53,7 @@ def dia_validate(dia: date) -> Tuple[str, bool]:
     settings = get_settings()
     holiday_repo = HolidayRepository()
 
-    mensaje = ''
+    mensaje = ""
     registrar = True
 
     # Check if it's a holiday
@@ -61,14 +62,14 @@ def dia_validate(dia: date) -> Tuple[str, bool]:
         if holiday_info:
             mensaje += f'\n🎉 {holiday_info["name"]} (Festivo)'
         else:
-            mensaje += '\n🎉 Festivo'
+            mensaje += "\n🎉 Festivo"
         registrar = False
         logger.debug(f"Day is a holiday: {dia} - {mensaje}")
         return mensaje, registrar
 
     # Check if it's a personal vacation day
     if holiday_repo.is_personal_vacation(dia):
-        mensaje += '\n🏖️ Vacaciones personales'
+        mensaje += "\n🏖️ Vacaciones personales"
         registrar = False
         logger.debug(f"Day is a vacation day: {dia}")
         return mensaje, registrar
@@ -80,11 +81,11 @@ def dia_validate(dia: date) -> Tuple[str, bool]:
         # Not a configured telework day
         # Check if it's in the occasional office days list
         registrar = False
-        mensaje += '\n🏢 Día de oficina (no teletrabajo configurado)'
+        mensaje += "\n🏢 Día de oficina (no teletrabajo configurado)"
         logger.debug(f"Not a telework day: {dia.isoweekday()} not in {settings.telework_days}")
     else:
         # It's a configured telework day
-        mensaje += '\n🏠 Día de teletrabajo'
+        mensaje += "\n🏠 Día de teletrabajo"
         logger.debug(f"Telework day: {dia}")
 
     return mensaje, registrar

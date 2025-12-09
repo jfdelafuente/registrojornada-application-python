@@ -3,7 +3,7 @@
 import logging
 from typing import Optional
 
-from config import get_settings, Settings
+from config import Settings, get_settings
 from security.secrets_manager import SecretsManager
 from services.auth_service import AuthService
 from services.hr_service import HRService
@@ -14,7 +14,7 @@ from utils.error_handler import ErrorHandler
 logger = logging.getLogger(__name__)
 
 # Global singleton instance
-_container_instance: Optional['ServiceContainer'] = None
+_container_instance: Optional["ServiceContainer"] = None
 
 
 class ServiceContainer:
@@ -104,15 +104,12 @@ class ServiceContainer:
         """
         if self._notification_service is None:
             # Get decrypted bot token
-            bot_token = self.secrets_manager.get_secret('BOT_TOKEN_ENCRYPTED')
+            bot_token = self.secrets_manager.get_secret("BOT_TOKEN_ENCRYPTED")
 
             # Get chat ID from settings if available
-            chat_id = getattr(self.settings, 'default_chat_id', None)
+            chat_id = getattr(self.settings, "default_chat_id", None)
 
-            self._notification_service = NotificationService(
-                bot_token=bot_token,
-                chat_id=chat_id
-            )
+            self._notification_service = NotificationService(bot_token=bot_token, chat_id=chat_id)
             logger.debug("NotificationService initialized")
         return self._notification_service
 
@@ -138,9 +135,7 @@ class ServiceContainer:
             ErrorHandler instance with notification service
         """
         if self._error_handler is None:
-            self._error_handler = ErrorHandler(
-                notification_service=self.notification_service
-            )
+            self._error_handler = ErrorHandler(notification_service=self.notification_service)
             logger.debug("ErrorHandler initialized")
         return self._error_handler
 

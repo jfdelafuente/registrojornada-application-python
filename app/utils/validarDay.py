@@ -12,8 +12,9 @@ def validarDay(fecha: str) -> bool:
     Returns:
         bool: True si el formato es correcto
     """
-    return bool(re.match(r'^\d{4}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$', fecha))
-    
+    return bool(re.match(r"^\d{4}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$", fecha))
+
+
 def validarDias(fecha: str, lista_fechas: list) -> bool:
     """
     Comprueba si 'fecha' está incluido en la 'lista_fechas'
@@ -28,9 +29,10 @@ def validarDias(fecha: str, lista_fechas: list) -> bool:
     fecha_real = datetime.strptime(fecha, "%Y%m%d")
     return fecha_real.strftime("%d/%m") in lista_fechas
 
-def validarDiaTT(fecha:str, lista_fechas: list) -> bool:
+
+def validarDiaTT(fecha: str, lista_fechas: list) -> bool:
     """
-    Comprueba si el dia de la semana a la que pertenence 'fecha' 
+    Comprueba si el dia de la semana a la que pertenence 'fecha'
     está incluido en la 'lista_fechas'. Los valores válidos son:
     1:Lunes,2:Martes,3:Miercóles ...6:Sabado y 7:Domingo
 

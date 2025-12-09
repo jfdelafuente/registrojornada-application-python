@@ -119,12 +119,9 @@ class TestSecretsManager:
         encrypted = SecretsManager.encrypt_secret(plain_text, key)
 
         # Decrypt using SecretsManager
-        with patch.dict('os.environ', {
-            'ENCRYPTION_KEY': key,
-            'MY_SECRET': encrypted
-        }):
+        with patch.dict("os.environ", {"ENCRYPTION_KEY": key, "MY_SECRET": encrypted}):
             manager = SecretsManager()
-            decrypted = manager.get_secret('MY_SECRET')
+            decrypted = manager.get_secret("MY_SECRET")
 
         assert decrypted == plain_text
 
@@ -137,13 +134,10 @@ class TestSecretsManager:
         encrypted = SecretsManager.encrypt_secret(plain_text, key1)
 
         # Try to decrypt with different key
-        with patch.dict('os.environ', {
-            'ENCRYPTION_KEY': key2,
-            'SECRET': encrypted
-        }):
+        with patch.dict("os.environ", {"ENCRYPTION_KEY": key2, "SECRET": encrypted}):
             manager = SecretsManager()
             with pytest.raises(ValueError):
-                manager.get_secret('SECRET')
+                manager.get_secret("SECRET")
 
     def test_multiple_secrets(self, encryption_key, monkeypatch):
         """Test retrieving multiple different secrets."""

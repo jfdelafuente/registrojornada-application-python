@@ -28,9 +28,7 @@ class TestNotificationServiceInit:
     def test_initialization_custom_limits(self):
         """Test initialization with custom rate limits."""
         service = NotificationService(
-            bot_token="test_token",
-            max_messages_per_minute=10,
-            max_retries=5
+            bot_token="test_token", max_messages_per_minute=10, max_retries=5
         )
 
         assert service.max_messages_per_minute == 10
@@ -49,10 +47,7 @@ class TestRateLimiting:
 
     def test_rate_limit_not_exceeded(self):
         """Test rate limit check passes when under limit."""
-        service = NotificationService(
-            bot_token="test_token",
-            max_messages_per_minute=5
-        )
+        service = NotificationService(bot_token="test_token", max_messages_per_minute=5)
 
         # Should not raise
         service._check_rate_limit()
@@ -60,10 +55,7 @@ class TestRateLimiting:
 
     def test_rate_limit_exceeded(self):
         """Test rate limit check fails when limit exceeded."""
-        service = NotificationService(
-            bot_token="test_token",
-            max_messages_per_minute=2
-        )
+        service = NotificationService(bot_token="test_token", max_messages_per_minute=2)
 
         # Add messages to exceed limit
         service._message_timestamps.append(datetime.now())
@@ -76,10 +68,7 @@ class TestRateLimiting:
 
     def test_rate_limit_window_cleanup(self):
         """Test old timestamps are removed from rate limit window."""
-        service = NotificationService(
-            bot_token="test_token",
-            max_messages_per_minute=2
-        )
+        service = NotificationService(bot_token="test_token", max_messages_per_minute=2)
 
         # Add old timestamps (>1 minute ago)
         old_time = datetime.now() - timedelta(minutes=2)
@@ -97,7 +86,7 @@ class TestRateLimiting:
 class TestSendMessage:
     """Test send_message functionality."""
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_message_success(self, mock_send):
         """Test successful message sending."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -106,13 +95,10 @@ class TestSendMessage:
 
         assert result is True
         mock_send.assert_called_once_with(
-            chat_id="123",
-            text="Test message",
-            parse_mode="Markdown",
-            disable_notification=False
+            chat_id="123", text="Test message", parse_mode="Markdown", disable_notification=False
         )
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_message_with_custom_chat_id(self, mock_send):
         """Test sending to different chat_id."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -120,7 +106,7 @@ class TestSendMessage:
         result = service.send_message("Test", chat_id="456")
 
         assert result is True
-        assert mock_send.call_args[1]['chat_id'] == "456"
+        assert mock_send.call_args[1]["chat_id"] == "456"
 
     def test_send_message_no_chat_id(self):
         """Test sending without chat_id fails gracefully."""
@@ -130,16 +116,16 @@ class TestSendMessage:
 
         assert result is False
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_message_with_html_parse_mode(self, mock_send):
         """Test sending with HTML parse mode."""
         service = NotificationService(bot_token="test_token", chat_id="123")
 
         service.send_message("Test", parse_mode="HTML")
 
-        assert mock_send.call_args[1]['parse_mode'] == "HTML"
+        assert mock_send.call_args[1]["parse_mode"] == "HTML"
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_message_retry_on_api_exception(self, mock_send):
         """Test message retry on API exception."""
         service = NotificationService(bot_token="test_token", chat_id="123", max_retries=3)
@@ -148,7 +134,7 @@ class TestSendMessage:
         mock_send.side_effect = [
             ApiException("Error", "error", "error"),
             ApiException("Error", "error", "error"),
-            None  # Success
+            None,  # Success
         ]
 
         result = service.send_message("Test")
@@ -156,8 +142,8 @@ class TestSendMessage:
         assert result is True
         assert mock_send.call_count == 3
 
-    @patch('telebot.TeleBot.send_message')
-    @patch('time.sleep')  # Mock sleep to speed up tests
+    @patch("telebot.TeleBot.send_message")
+    @patch("time.sleep")  # Mock sleep to speed up tests
     def test_send_message_all_retries_fail(self, mock_sleep, mock_send):
         """Test when all retries fail."""
         service = NotificationService(bot_token="test_token", chat_id="123", max_retries=2)
@@ -169,7 +155,7 @@ class TestSendMessage:
 
         assert mock_send.call_count == 2
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_message_unexpected_exception(self, mock_send):
         """Test handling unexpected exceptions."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -185,7 +171,7 @@ class TestSendMessage:
 class TestTemplateMessages:
     """Test template message methods."""
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_success(self, mock_send):
         """Test send_success method."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -193,12 +179,12 @@ class TestTemplateMessages:
         result = service.send_success("Operation Complete", "All tasks done")
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "✅" in called_message
         assert "Operation Complete" in called_message
         assert "All tasks done" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_error(self, mock_send):
         """Test send_error method."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -207,11 +193,11 @@ class TestTemplateMessages:
         result = service.send_error(error)
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "❌" in called_message
         assert "Error" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_error_with_custom_message(self, mock_send):
         """Test send_error with custom user message."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -219,10 +205,10 @@ class TestTemplateMessages:
         error = Exception("Technical error")
         result = service.send_error(error, user_message="Please try again later")
 
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "Please try again later" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_warning(self, mock_send):
         """Test send_warning method."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -230,12 +216,12 @@ class TestTemplateMessages:
         result = service.send_warning("Low disk space")
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "⚠️" in called_message
         assert "Advertencia" in called_message
         assert "Low disk space" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_info(self, mock_send):
         """Test send_info method."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -243,7 +229,7 @@ class TestTemplateMessages:
         result = service.send_info("System update available")
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "ℹ️" in called_message
         assert "System update available" in called_message
 
@@ -252,7 +238,7 @@ class TestTemplateMessages:
 class TestWorkdayMessages:
     """Test workday-specific messages."""
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_workday_confirmation_success(self, mock_send):
         """Test sending successful workday confirmation."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -262,16 +248,16 @@ class TestWorkdayMessages:
             start_time="09:00",
             end_time="18:00",
             workday_type=WorkdayTypeEnum.TELEWORK,
-            success=True
+            success=True,
         )
 
         result = service.send_workday_confirmation(registration)
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "Jornada Registrada" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_workday_confirmation_failure(self, mock_send):
         """Test sending failed workday confirmation."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -281,36 +267,33 @@ class TestWorkdayMessages:
             start_time="09:00",
             end_time="18:00",
             success=False,
-            message="Registration failed"
+            message="Registration failed",
         )
 
         result = service.send_workday_confirmation(registration)
 
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "No se pudo registrar" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_weekly_report(self, mock_send):
         """Test sending weekly report."""
         service = NotificationService(bot_token="test_token", chat_id="123")
 
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         workday = WorkdayRegistration(
             date=date(2025, 12, 1),
             start_time="09:00",
             end_time="18:00",
-            workday_type=WorkdayTypeEnum.TELEWORK
+            workday_type=WorkdayTypeEnum.TELEWORK,
         )
         report.add_registration(workday)
 
         result = service.send_weekly_report(report)
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "Informe Semanal" in called_message
 
 
@@ -318,7 +301,7 @@ class TestWorkdayMessages:
 class TestHelpAndGreeting:
     """Test help and greeting messages."""
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_help_message(self, mock_send):
         """Test sending help message."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -326,13 +309,13 @@ class TestHelpAndGreeting:
         result = service.send_help_message()
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "Comandos Disponibles" in called_message
         assert "/dia" in called_message
         assert "/info" in called_message
         assert "/help" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_greeting_without_username(self, mock_send):
         """Test sending greeting without username."""
         service = NotificationService(bot_token="test_token", chat_id="123")
@@ -340,16 +323,16 @@ class TestHelpAndGreeting:
         result = service.send_greeting()
 
         assert result is True
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "Hola" in called_message
         assert "bot de Registro de Jornadas" in called_message
 
-    @patch('telebot.TeleBot.send_message')
+    @patch("telebot.TeleBot.send_message")
     def test_send_greeting_with_username(self, mock_send):
         """Test sending greeting with username."""
         service = NotificationService(bot_token="test_token", chat_id="123")
 
         result = service.send_greeting(username="Juan")
 
-        called_message = mock_send.call_args[1]['text']
+        called_message = mock_send.call_args[1]["text"]
         assert "Hola Juan" in called_message

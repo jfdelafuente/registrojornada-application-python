@@ -38,7 +38,7 @@ class TestWorkdayRegistration:
             start_time="09:00",
             end_time="18:00",
             workday_type=WorkdayTypeEnum.TELEWORK,
-            location="Home"
+            location="Home",
         )
 
         assert workday.date == date(2025, 12, 8)
@@ -51,11 +51,7 @@ class TestWorkdayRegistration:
 
     def test_workday_defaults(self):
         """Test default values for optional fields."""
-        workday = WorkdayRegistration(
-            date=date(2025, 12, 8),
-            start_time="09:00",
-            end_time="18:00"
-        )
+        workday = WorkdayRegistration(date=date(2025, 12, 8), start_time="09:00", end_time="18:00")
 
         assert workday.workday_type == WorkdayTypeEnum.TELEWORK  # Default
         assert workday.location is None
@@ -67,9 +63,7 @@ class TestWorkdayRegistration:
         """Test validation fails for invalid time format."""
         with pytest.raises(ValidationError) as exc_info:
             WorkdayRegistration(
-                date=date(2025, 12, 8),
-                start_time="25:00",  # Invalid: hour > 23
-                end_time="18:00"
+                date=date(2025, 12, 8), start_time="25:00", end_time="18:00"  # Invalid: hour > 23
             )
 
         assert "Time must be in HH:MM format" in str(exc_info.value)
@@ -78,53 +72,35 @@ class TestWorkdayRegistration:
         """Test validation fails for invalid end_time format."""
         with pytest.raises(ValidationError) as exc_info:
             WorkdayRegistration(
-                date=date(2025, 12, 8),
-                start_time="09:00",
-                end_time="not_a_time"  # Invalid format
+                date=date(2025, 12, 8), start_time="09:00", end_time="not_a_time"  # Invalid format
             )
 
         assert "Time must be in HH:MM format" in str(exc_info.value)
 
     def test_calculate_hours_full_day(self):
         """Test calculating hours for a full workday."""
-        workday = WorkdayRegistration(
-            date=date(2025, 12, 8),
-            start_time="09:00",
-            end_time="18:00"
-        )
+        workday = WorkdayRegistration(date=date(2025, 12, 8), start_time="09:00", end_time="18:00")
 
         hours = workday.calculate_hours()
         assert hours == 9.0
 
     def test_calculate_hours_half_day(self):
         """Test calculating hours for a half day."""
-        workday = WorkdayRegistration(
-            date=date(2025, 12, 8),
-            start_time="09:00",
-            end_time="13:00"
-        )
+        workday = WorkdayRegistration(date=date(2025, 12, 8), start_time="09:00", end_time="13:00")
 
         hours = workday.calculate_hours()
         assert hours == 4.0
 
     def test_calculate_hours_with_minutes(self):
         """Test calculating hours with fractional hours."""
-        workday = WorkdayRegistration(
-            date=date(2025, 12, 8),
-            start_time="09:15",
-            end_time="17:45"
-        )
+        workday = WorkdayRegistration(date=date(2025, 12, 8), start_time="09:15", end_time="17:45")
 
         hours = workday.calculate_hours()
         assert hours == 8.5
 
     def test_calculate_hours_empty_times(self):
         """Test calculating hours with empty times returns 0."""
-        workday = WorkdayRegistration(
-            date=date(2025, 12, 8),
-            start_time="",
-            end_time=""
-        )
+        workday = WorkdayRegistration(date=date(2025, 12, 8), start_time="", end_time="")
 
         hours = workday.calculate_hours()
         assert hours == 0.0
@@ -137,7 +113,7 @@ class TestWorkdayRegistration:
             end_time="18:00",
             workday_type=WorkdayTypeEnum.TELEWORK,
             location="Home",
-            message="Registered"
+            message="Registered",
         )
 
         msg = workday.to_telegram_message()
@@ -157,7 +133,7 @@ class TestWorkdayRegistration:
             start_time="08:00",
             end_time="17:00",
             workday_type=WorkdayTypeEnum.OFFICE,
-            location="La Finca"
+            location="La Finca",
         )
 
         msg = workday.to_telegram_message()
@@ -172,7 +148,7 @@ class TestWorkdayRegistration:
             date=date(2025, 12, 8),
             start_time="00:00",
             end_time="00:00",
-            workday_type=WorkdayTypeEnum.VACATION
+            workday_type=WorkdayTypeEnum.VACATION,
         )
 
         msg = workday.to_telegram_message()
@@ -187,10 +163,7 @@ class TestWeeklyReport:
 
     def test_create_empty_report(self):
         """Test creating an empty weekly report."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         assert report.start_date == date(2025, 12, 1)
         assert report.end_date == date(2025, 12, 7)
@@ -202,16 +175,13 @@ class TestWeeklyReport:
 
     def test_add_telework_registration(self):
         """Test adding a telework registration to report."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         workday = WorkdayRegistration(
             date=date(2025, 12, 1),
             start_time="09:00",
             end_time="18:00",
-            workday_type=WorkdayTypeEnum.TELEWORK
+            workday_type=WorkdayTypeEnum.TELEWORK,
         )
 
         report.add_registration(workday)
@@ -224,16 +194,13 @@ class TestWeeklyReport:
 
     def test_add_office_registration(self):
         """Test adding an office registration to report."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         workday = WorkdayRegistration(
             date=date(2025, 12, 2),
             start_time="08:00",
             end_time="17:00",
-            workday_type=WorkdayTypeEnum.OFFICE
+            workday_type=WorkdayTypeEnum.OFFICE,
         )
 
         report.add_registration(workday)
@@ -245,23 +212,20 @@ class TestWeeklyReport:
 
     def test_add_multiple_registrations(self):
         """Test adding multiple registrations to report."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         telework = WorkdayRegistration(
             date=date(2025, 12, 1),
             start_time="09:00",
             end_time="18:00",
-            workday_type=WorkdayTypeEnum.TELEWORK
+            workday_type=WorkdayTypeEnum.TELEWORK,
         )
 
         office = WorkdayRegistration(
             date=date(2025, 12, 2),
             start_time="08:00",
             end_time="16:00",
-            workday_type=WorkdayTypeEnum.OFFICE
+            workday_type=WorkdayTypeEnum.OFFICE,
         )
 
         report.add_registration(telework)
@@ -274,10 +238,7 @@ class TestWeeklyReport:
 
     def test_to_telegram_message_empty(self):
         """Test Telegram message for empty report."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         msg = report.to_telegram_message()
 
@@ -288,23 +249,20 @@ class TestWeeklyReport:
 
     def test_to_telegram_message_with_data(self):
         """Test Telegram message with report data."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         workday1 = WorkdayRegistration(
             date=date(2025, 12, 1),
             start_time="09:00",
             end_time="18:00",
-            workday_type=WorkdayTypeEnum.TELEWORK
+            workday_type=WorkdayTypeEnum.TELEWORK,
         )
 
         workday2 = WorkdayRegistration(
             date=date(2025, 12, 2),
             start_time="08:00",
             end_time="17:00",
-            workday_type=WorkdayTypeEnum.OFFICE
+            workday_type=WorkdayTypeEnum.OFFICE,
         )
 
         report.add_registration(workday1)
@@ -322,24 +280,21 @@ class TestWeeklyReport:
 
     def test_registrations_sorted_by_date(self):
         """Test that registrations are sorted by date in message."""
-        report = WeeklyReport(
-            start_date=date(2025, 12, 1),
-            end_date=date(2025, 12, 7)
-        )
+        report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
 
         # Add in reverse order
         workday2 = WorkdayRegistration(
             date=date(2025, 12, 5),
             start_time="09:00",
             end_time="18:00",
-            workday_type=WorkdayTypeEnum.TELEWORK
+            workday_type=WorkdayTypeEnum.TELEWORK,
         )
 
         workday1 = WorkdayRegistration(
             date=date(2025, 12, 3),
             start_time="09:00",
             end_time="18:00",
-            workday_type=WorkdayTypeEnum.OFFICE
+            workday_type=WorkdayTypeEnum.OFFICE,
         )
 
         report.add_registration(workday2)

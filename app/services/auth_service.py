@@ -1,18 +1,20 @@
 """Authentication service for ViveOrange OAM system."""
 
-from bs4 import BeautifulSoup
-from typing import Dict, Optional
 import logging
+from typing import Dict, Optional
+
 import requests
-from app.security.secrets_manager import SecretsManager
+from bs4 import BeautifulSoup
+
 from app.config import get_settings
 from app.exceptions import (
     AuthenticationError,
+    HTMLParsingError,
     InvalidCredentialsError,
     OAMRedirectError,
     SessionExpiredError,
-    HTMLParsingError
 )
+from app.security.secrets_manager import SecretsManager
 
 logger = logging.getLogger(__name__)
 
@@ -34,9 +36,9 @@ class AuthService:
         self.secrets = SecretsManager()
 
         # Decrypt credentials
-        self.username = self.secrets.get_secret('HR_USERNAME_ENCRYPTED')
-        self.password = self.secrets.get_secret('HR_PASSWORD_ENCRYPTED')
-        self.employee_code = self.secrets.get_secret('EMPLOYEE_CODE_ENCRYPTED')
+        self.username = self.secrets.get_secret("HR_USERNAME_ENCRYPTED")
+        self.password = self.secrets.get_secret("HR_PASSWORD_ENCRYPTED")
+        self.employee_code = self.secrets.get_secret("EMPLOYEE_CODE_ENCRYPTED")
 
     def authenticate(self, session: requests.Session) -> bool:
         """
@@ -78,21 +80,12 @@ class AuthService:
             raise
         except requests.RequestException as e:
             logger.error(f"Network error during authentication: {e}")
-            raise AuthenticationError(
-                "Network error during authentication",
-                {'error': str(e)}
-            )
+            raise AuthenticationError("Network error during authentication", {"error": str(e)})
         except Exception as e:
             logger.error(f"Unexpected authentication error: {e}", exc_info=True)
-            raise AuthenticationError(
-                "Unexpected authentication error",
-                {'error': str(e)}
-            )
+            raise AuthenticationError("Unexpected authentication error", {"error": str(e)})
 
-    def _step1_initial_request(
-        self,
-        session: requests.Session
-    ) -> tuple[str, Dict[str, str]]:
+    def _step1_initial_request(self, session: requests.Session) -> tuple[str, Dict[str, str]]:
         """
         Step 1: Initial request to ViveOrange.
 
@@ -108,13 +101,13 @@ class AuthService:
         logger.debug(f"Initial request status: {response.status_code}")
 
         # Parse OAM redirect form
-        soup = BeautifulSoup(response.text, 'lxml')
-        form = soup.select_one('body form')
+        soup = BeautifulSoup(response.text, "lxml")
+        form = soup.select_one("body form")
 
         if not form:
             raise OAMRedirectError(step="step1_initial_request")
 
-        oam_url = form.get('action')
+        oam_url = form.get("action")
         if not oam_url:
             raise HTMLParsingError(element="form action attribute")
 
@@ -126,10 +119,7 @@ class AuthService:
         return oam_url, oam_data
 
     def _step2_oam_redirect(
-        self,
-        session: requests.Session,
-        oam_url: str,
-        oam_data: Dict[str, str]
+        self, session: requests.Session, oam_url: str, oam_data: Dict[str, str]
     ) -> tuple[str, Dict[str, str]]:
         """
         Step 2: Handle OAM redirect.
@@ -148,13 +138,13 @@ class AuthService:
         logger.debug(f"OAM redirect status: {response.status_code}")
 
         # Parse login form
-        soup = BeautifulSoup(response.text, 'lxml')
-        form = soup.select_one('form#loginData')
+        soup = BeautifulSoup(response.text, "lxml")
+        form = soup.select_one("form#loginData")
 
         if not form:
             raise OAMRedirectError(step="step2_oam_redirect")
 
-        form_action = form.get('action')
+        form_action = form.get("action")
         if not form_action:
             raise HTMLParsingError(element="login form action")
 
@@ -179,10 +169,7 @@ class AuthService:
         return login_url, login_data
 
     def _step3_submit_login(
-        self,
-        session: requests.Session,
-        login_url: str,
-        login_data: Dict[str, str]
+        self, session: requests.Session, login_url: str, login_data: Dict[str, str]
     ) -> tuple[str, Dict[str, str]]:
         """
         Step 3: Submit login credentials.
@@ -201,14 +188,14 @@ class AuthService:
         logger.debug(f"Login submit status: {response.status_code}")
 
         # Parse return form
-        soup = BeautifulSoup(response.text, 'lxml')
-        form = soup.select_one('body form')
+        soup = BeautifulSoup(response.text, "lxml")
+        form = soup.select_one("body form")
 
         if not form:
             # Login credentials might be invalid
             raise InvalidCredentialsError(username=self.username)
 
-        return_url = form.get('action')
+        return_url = form.get("action")
         if not return_url:
             raise HTMLParsingError(element="return form action")
         return_data = {}
@@ -220,10 +207,7 @@ class AuthService:
         return return_url, return_data
 
     def _step4_return_to_viveorange(
-        self,
-        session: requests.Session,
-        return_url: str,
-        return_data: Dict[str, str]
+        self, session: requests.Session, return_url: str, return_data: Dict[str, str]
     ):
         """
         Step 4: Return to ViveOrange with authentication.

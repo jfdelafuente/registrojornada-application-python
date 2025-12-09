@@ -1,7 +1,7 @@
 """Input validation for user data and configuration."""
 
 import re
-from datetime import datetime, date
+from datetime import date, datetime
 from typing import Optional
 
 
@@ -40,7 +40,7 @@ class InputValidator:
         code = code.strip()
 
         # Check if numeric
-        if not re.match(r'^\d+$', code):
+        if not re.match(r"^\d+$", code):
             raise ValueError(f"Invalid employee code: {code}. Must be numeric.")
 
         return int(code)
@@ -66,12 +66,12 @@ class InputValidator:
             return False
 
         # Check format
-        if not re.match(r'^\d{8}$', date_str):
+        if not re.match(r"^\d{8}$", date_str):
             return False
 
         # Try to parse as date
         try:
-            datetime.strptime(date_str, '%Y%m%d')
+            datetime.strptime(date_str, "%Y%m%d")
             return True
         except ValueError:
             return False
@@ -100,13 +100,15 @@ class InputValidator:
             return False
 
         # Basic URL pattern
-        url_pattern = r'^https?://[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}(:[0-9]{1,5})?(/.*)?$'
+        url_pattern = (
+            r"^https?://[a-zA-Z0-9]+([\-\.]{1}[a-zA-Z0-9]+)*\.[a-zA-Z]{2,}(:[0-9]{1,5})?(/.*)?$"
+        )
 
         if not re.match(url_pattern, url):
             return False
 
         # Check HTTPS requirement
-        if require_https and not url.startswith('https://'):
+        if require_https and not url.startswith("https://"):
             return False
 
         return True
@@ -132,7 +134,7 @@ class InputValidator:
             return False
 
         # Telegram chat IDs are integers, can be negative for groups
-        return bool(re.match(r'^-?\d+$', chat_id.strip()))
+        return bool(re.match(r"^-?\d+$", chat_id.strip()))
 
     @staticmethod
     def validate_time_format(time_str: str) -> bool:
@@ -155,12 +157,12 @@ class InputValidator:
             return False
 
         # Check HH:MM format
-        if not re.match(r'^\d{2}:\d{2}$', time_str):
+        if not re.match(r"^\d{2}:\d{2}$", time_str):
             return False
 
         # Validate hours and minutes
         try:
-            hours, minutes = map(int, time_str.split(':'))
+            hours, minutes = map(int, time_str.split(":"))
             return 0 <= hours <= 23 and 0 <= minutes <= 59
         except (ValueError, AttributeError):
             return False
@@ -188,10 +190,10 @@ class InputValidator:
         sanitized = input_str[:max_length]
 
         # Remove HTML tags
-        sanitized = re.sub(r'<[^>]+>', '', sanitized)
+        sanitized = re.sub(r"<[^>]+>", "", sanitized)
 
         # Remove control characters except newline and tab
-        sanitized = re.sub(r'[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]', '', sanitized)
+        sanitized = re.sub(r"[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]", "", sanitized)
 
         return sanitized.strip()
 

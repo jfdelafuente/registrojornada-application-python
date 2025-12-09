@@ -1,9 +1,10 @@
 """Secure secrets management with encryption."""
 
-import os
-from cryptography.fernet import Fernet
-from typing import Optional
 import logging
+import os
+from typing import Optional
+
+from cryptography.fernet import Fernet
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class SecretsManager:
 
     def __init__(self):
         """Initialize secrets manager with encryption key."""
-        encryption_key = os.getenv('ENCRYPTION_KEY')
+        encryption_key = os.getenv("ENCRYPTION_KEY")
         if not encryption_key:
             raise ValueError(
                 "ENCRYPTION_KEY not found in environment variables. "

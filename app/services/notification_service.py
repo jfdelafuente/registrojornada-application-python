@@ -2,13 +2,14 @@
 
 import logging
 import time
-from typing import Optional
 from datetime import datetime, timedelta
+from typing import Optional
+
 import telebot
 from telebot.apihelper import ApiException
 
-from app.models.workday import WorkdayRegistration, WeeklyReport
-from app.exceptions import TelegramSendError, RegistroJornadaException
+from app.exceptions import RegistroJornadaException, TelegramSendError
+from app.models.workday import WeeklyReport, WorkdayRegistration
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class NotificationService:
         bot_token: str,
         chat_id: str = None,
         max_messages_per_minute: int = 20,
-        max_retries: int = 3
+        max_retries: int = 3,
     ):
         """
         Initialize notification service.
@@ -60,12 +61,12 @@ class NotificationService:
         cutoff = now - self._rate_limit_window
 
         # Remove old timestamps
-        self._message_timestamps = [
-            ts for ts in self._message_timestamps if ts > cutoff
-        ]
+        self._message_timestamps = [ts for ts in self._message_timestamps if ts > cutoff]
 
         if len(self._message_timestamps) >= self.max_messages_per_minute:
-            logger.warning(f"Rate limit exceeded: {len(self._message_timestamps)} messages in last minute")
+            logger.warning(
+                f"Rate limit exceeded: {len(self._message_timestamps)} messages in last minute"
+            )
             raise TelegramSendError(
                 reason=f"Rate limit exceeded ({self.max_messages_per_minute} messages/minute)"
             )
@@ -77,24 +78,24 @@ class NotificationService:
         message: str,
         chat_id: str = None,
         parse_mode: str = "Markdown",
-        disable_notification: bool = False
+        disable_notification: bool = False,
     ) -> bool:
         """
-        Send a Telegram message with retries and rate limiting.
+                Send a Telegram message with retries and rate limiting.
 
-        Args:
-            message: Message text to send
-            chat_id: Telegram chat ID (uses default if None)
-            parse_mode: Message parse mode (Markdown, HTML, or None)
-            disable_notification: If True, sends silently
+                Args:
+                    message: Message text to send
+                    chat_id: Telegram chat ID (uses default if None)
+                    parse_mode: Message parse mode (Markdown, HTML, or None)
+                    disable_notification: If True, sends silently
 
-        Returns:
-            True if sent successfully, False otherwise
+                Returns:
+                    True if sent successfully, False otherwise
 
-        Raises:
-            Telegram
+                Raises:
+                    Telegram
 
-SendError: If all retries fail
+        SendError: If all retries fail
         """
         chat_id = chat_id or self.default_chat_id
 
@@ -106,7 +107,9 @@ SendError: If all retries fail
         try:
             self._check_rate_limit()
         except TelegramSendError as e:
-            logger.warning(f"Rate limit hit, message will be logged but not sent: {message[:50]}...")
+            logger.warning(
+                f"Rate limit hit, message will be logged but not sent: {message[:50]}..."
+            )
             return False
 
         # Retry logic
@@ -116,17 +119,19 @@ SendError: If all retries fail
                     chat_id=chat_id,
                     text=message,
                     parse_mode=parse_mode,
-                    disable_notification=disable_notification
+                    disable_notification=disable_notification,
                 )
                 logger.debug(f"Message sent successfully to {chat_id}")
                 return True
 
             except ApiException as e:
-                logger.warning(f"Telegram API error (attempt {attempt + 1}/{self.max_retries}): {e}")
+                logger.warning(
+                    f"Telegram API error (attempt {attempt + 1}/{self.max_retries}): {e}"
+                )
 
                 if attempt < self.max_retries - 1:
                     # Exponential backoff
-                    sleep_time = 2 ** attempt
+                    sleep_time = 2**attempt
                     time.sleep(sleep_time)
                 else:
                     # Final attempt failed
@@ -134,7 +139,7 @@ SendError: If all retries fail
                     logger.info(f"Message content (logged instead): {message}")
                     raise TelegramSendError(
                         chat_id=chat_id,
-                        reason=f"API error after {self.max_retries} retries: {str(e)}"
+                        reason=f"API error after {self.max_retries} retries: {str(e)}",
                     )
 
             except Exception as e:
@@ -144,12 +149,7 @@ SendError: If all retries fail
 
         return False
 
-    def send_success(
-        self,
-        title: str,
-        details: str = "",
-        chat_id: str = None
-    ) -> bool:
+    def send_success(self, title: str, details: str = "", chat_id: str = None) -> bool:
         """
         Send a success notification.
 
@@ -172,7 +172,7 @@ SendError: If all retries fail
         error: Exception,
         user_message: str = None,
         chat_id: str = None,
-        include_details: bool = False
+        include_details: bool = False,
     ) -> bool:
         """
         Send an error notification.
@@ -200,11 +200,7 @@ SendError: If all retries fail
 
         return self.send_message(message, chat_id=chat_id)
 
-    def send_warning(
-        self,
-        message: str,
-        chat_id: str = None
-    ) -> bool:
+    def send_warning(self, message: str, chat_id: str = None) -> bool:
         """
         Send a warning notification.
 
@@ -218,11 +214,7 @@ SendError: If all retries fail
         formatted_message = f"⚠️ *Advertencia*\n{message}"
         return self.send_message(formatted_message, chat_id=chat_id)
 
-    def send_info(
-        self,
-        message: str,
-        chat_id: str = None
-    ) -> bool:
+    def send_info(self, message: str, chat_id: str = None) -> bool:
         """
         Send an info notification.
 
@@ -237,9 +229,7 @@ SendError: If all retries fail
         return self.send_message(formatted_message, chat_id=chat_id)
 
     def send_workday_confirmation(
-        self,
-        registration: WorkdayRegistration,
-        chat_id: str = None
+        self, registration: WorkdayRegistration, chat_id: str = None
     ) -> bool:
         """
         Send workday registration confirmation.
@@ -256,16 +246,10 @@ SendError: If all retries fail
             return self.send_success("Jornada Registrada", message, chat_id=chat_id)
         else:
             return self.send_error(
-                Exception(registration.message),
-                "No se pudo registrar la jornada",
-                chat_id=chat_id
+                Exception(registration.message), "No se pudo registrar la jornada", chat_id=chat_id
             )
 
-    def send_weekly_report(
-        self,
-        report: WeeklyReport,
-        chat_id: str = None
-    ) -> bool:
+    def send_weekly_report(self, report: WeeklyReport, chat_id: str = None) -> bool:
         """
         Send weekly report.
 
@@ -279,10 +263,7 @@ SendError: If all retries fail
         message = report.to_telegram_message()
         return self.send_message(message, chat_id=chat_id)
 
-    def send_help_message(
-        self,
-        chat_id: str = None
-    ) -> bool:
+    def send_help_message(self, chat_id: str = None) -> bool:
         """
         Send help message with available commands.
 
@@ -313,11 +294,7 @@ SendError: If all retries fail
 """
         return self.send_message(message, chat_id=chat_id)
 
-    def send_greeting(
-        self,
-        username: str = None,
-        chat_id: str = None
-    ) -> bool:
+    def send_greeting(self, username: str = None, chat_id: str = None) -> bool:
         """
         Send greeting message.
 

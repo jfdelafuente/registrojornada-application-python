@@ -23,23 +23,35 @@ class SanitizedFormatter(logging.Formatter):
     # Patterns to sanitize (pattern, replacement)
     PATTERNS = [
         # Passwords in various formats
-        (r'(password|Password|PASSWORD|pass|Pass|PASS|pwd|Pwd|PWD)["\']?\s*[:=]\s*["\']?([^"\'}\s,]+)', r'\1=***'),
+        (
+            r'(password|Password|PASSWORD|pass|Pass|PASS|pwd|Pwd|PWD)["\']?\s*[:=]\s*["\']?([^"\'}\s,]+)',
+            r"\1=***",
+        ),
         # Tokens and keys
-        (r'(token|Token|TOKEN|key|Key|KEY|api[_-]?key)["\']?\s*[:=]\s*["\']?([^"\'}\s,]+)', r'\1=***'),
+        (
+            r'(token|Token|TOKEN|key|Key|KEY|api[_-]?key)["\']?\s*[:=]\s*["\']?([^"\'}\s,]+)',
+            r"\1=***",
+        ),
         # Session IDs and cookies
-        (r'(JSESSIONID|sessionid|session_id|Cookie|cookie)["\']?\s*[:=]\s*["\']?([^"\'}\s,;]+)', r'\1=***'),
+        (
+            r'(JSESSIONID|sessionid|session_id|Cookie|cookie)["\']?\s*[:=]\s*["\']?([^"\'}\s,;]+)',
+            r"\1=***",
+        ),
         # Authentication
-        (r'(auth|Auth|AUTH|authorization|Authorization)["\']?\s*[:=]\s*["\']?([^"\'}\s,]+)', r'\1=***'),
+        (
+            r'(auth|Auth|AUTH|authorization|Authorization)["\']?\s*[:=]\s*["\']?([^"\'}\s,]+)',
+            r"\1=***",
+        ),
         # Bearer tokens
-        (r'Bearer\s+([A-Za-z0-9\-._~+/]+=*)', r'Bearer ***'),
+        (r"Bearer\s+([A-Za-z0-9\-._~+/]+=*)", r"Bearer ***"),
         # HTML password inputs
-        (r'(<input[^>]*type=["\']password["\'][^>]*value=["\'])([^"\']+)(["\'])', r'\1***\3'),
+        (r'(<input[^>]*type=["\']password["\'][^>]*value=["\'])([^"\']+)(["\'])', r"\1***\3"),
         # JSON password fields
-        (r'("password"\s*:\s*")([^"]+)(")', r'\1***\3'),
+        (r'("password"\s*:\s*")([^"]+)(")', r"\1***\3"),
         # Credit card numbers (basic pattern)
-        (r'\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b', r'****-****-****-****'),
+        (r"\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b", r"****-****-****-****"),
         # Employee codes (DNI/NIE pattern - Spanish)
-        (r'\b[0-9]{8}[A-Z]\b', r'********X'),
+        (r"\b[0-9]{8}[A-Z]\b", r"********X"),
     ]
 
     def format(self, record: logging.LogRecord) -> str:
@@ -68,7 +80,7 @@ def setup_logger(
     level: int = logging.INFO,
     max_bytes: int = 10 * 1024 * 1024,  # 10MB
     backup_count: int = 5,
-    console: bool = False
+    console: bool = False,
 ) -> logging.Logger:
     """
     Configure logger with rotation and sanitization.
@@ -97,8 +109,7 @@ def setup_logger(
 
     # Create formatter
     formatter = SanitizedFormatter(
-        fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        fmt="%(asctime)s - %(name)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
     )
 
     # Add file handler if log_file specified
@@ -109,10 +120,7 @@ def setup_logger(
 
         # Create rotating file handler
         file_handler = RotatingFileHandler(
-            log_file,
-            maxBytes=max_bytes,
-            backupCount=backup_count,
-            encoding='utf-8'
+            log_file, maxBytes=max_bytes, backupCount=backup_count, encoding="utf-8"
         )
         file_handler.setFormatter(formatter)
         file_handler.setLevel(level)

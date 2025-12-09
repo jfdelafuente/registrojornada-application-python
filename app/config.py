@@ -1,10 +1,11 @@
 """Application configuration using Pydantic Settings."""
 
+import logging
 from pathlib import Path
 from typing import Optional
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -25,33 +26,39 @@ class Settings(BaseSettings):
     # Application metadata
     app_name: str = Field(default="RegistroJornada Bot", description="Application name")
     version: str = Field(default="4.0", description="Application version")
-    environment: str = Field(default="production", description="Environment (dev/staging/production)")
+    environment: str = Field(
+        default="production", description="Environment (dev/staging/production)"
+    )
 
     # Paths
-    base_dir: Path = Field(default_factory=lambda: Path(__file__).parent.parent, description="Base directory")
-    logs_dir: Path = Field(default_factory=lambda: Path(__file__).parent.parent / "logs", description="Logs directory")
-    data_dir: Path = Field(default_factory=lambda: Path(__file__).parent.parent / "data", description="Data directory")
+    base_dir: Path = Field(
+        default_factory=lambda: Path(__file__).parent.parent, description="Base directory"
+    )
+    logs_dir: Path = Field(
+        default_factory=lambda: Path(__file__).parent.parent / "logs", description="Logs directory"
+    )
+    data_dir: Path = Field(
+        default_factory=lambda: Path(__file__).parent.parent / "data", description="Data directory"
+    )
 
     # ViveOrange OAM URLs
     vive_orange_url: str = Field(
-        default="https://viveorange.orange.es/irj/portal",
-        description="ViveOrange portal URL"
+        default="https://viveorange.orange.es/irj/portal", description="ViveOrange portal URL"
     )
     oam_base_url: str = Field(
-        default="https://login.orange.es/oam/server",
-        description="OAM authentication base URL"
+        default="https://login.orange.es/oam/server", description="OAM authentication base URL"
     )
 
     # HR System URLs
     hr_attendance_url: str = Field(
         default="https://viveorange.orange.es/irj/servlet/prt/portal/prtroot/pcd!3aportal_content!2fOrange!2fOrangeRoles!2fOrange.RRHH_MisHorarios!2fOrange.RRHH_MisHorarios?NavMode=1",
-        description="HR attendance registration URL"
+        description="HR attendance registration URL",
     )
 
     # Holidays configuration
     holidays_file: Path = Field(
         default_factory=lambda: Path(__file__).parent.parent / "data" / "holidays.json",
-        description="Path to holidays JSON file"
+        description="Path to holidays JSON file",
     )
 
     # Telegram configuration (optional, can be overridden)
@@ -63,7 +70,7 @@ class Settings(BaseSettings):
     log_level: str = Field(default="INFO", description="Logging level")
     log_format: str = Field(
         default="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        description="Log format string"
+        description="Log format string",
     )
     log_max_bytes: int = Field(default=10_485_760, description="Max log file size (10MB)")
     log_backup_count: int = Field(default=5, description="Number of log backups to keep")
@@ -76,7 +83,9 @@ class Settings(BaseSettings):
     # Work schedule defaults (can be overridden by configD.py)
     default_start_time: str = Field(default="8:00", description="Default work start time")
     default_end_time: str = Field(default="18:00", description="Default work end time")
-    default_telework_days: list[int] = Field(default_factory=lambda: [1, 2], description="Default telework days (1=Monday)")
+    default_telework_days: list[int] = Field(
+        default_factory=lambda: [1, 2], description="Default telework days (1=Monday)"
+    )
 
     # Security
     encryption_algorithm: str = Field(default="Fernet", description="Encryption algorithm")
@@ -90,10 +99,10 @@ class Settings(BaseSettings):
     holiday_cache_size: int = Field(default=128, description="LRU cache size for holidays")
 
     model_config = SettingsConfigDict(
-        env_file='.env',
-        env_file_encoding='utf-8',
+        env_file=".env",
+        env_file_encoding="utf-8",
         case_sensitive=False,
-        extra='ignore'  # Ignore extra fields in .env
+        extra="ignore",  # Ignore extra fields in .env
     )
 
     def __init__(self, **kwargs):
@@ -151,7 +160,9 @@ def get_settings() -> Settings:
 
     if _settings_instance is None:
         _settings_instance = Settings()
-        logger.info(f"Settings initialized: {_settings_instance.app_name} v{_settings_instance.version}")
+        logger.info(
+            f"Settings initialized: {_settings_instance.app_name} v{_settings_instance.version}"
+        )
 
     return _settings_instance
 

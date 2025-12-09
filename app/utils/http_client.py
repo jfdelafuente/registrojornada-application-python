@@ -1,10 +1,11 @@
 """HTTP client with automatic retries and connection pooling."""
 
+import logging
+from typing import Any, Dict, Optional
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from typing import Optional, Dict, Any
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class HTTPClient:
         max_retries: int = 3,
         backoff_factor: float = 1.0,
         pool_connections: int = 10,
-        pool_maxsize: int = 20
+        pool_maxsize: int = 20,
     ):
         """
         Initialize HTTP client.
@@ -40,18 +41,11 @@ class HTTPClient:
         """
         self.timeout = timeout
         self.session = self._create_session(
-            max_retries,
-            backoff_factor,
-            pool_connections,
-            pool_maxsize
+            max_retries, backoff_factor, pool_connections, pool_maxsize
         )
 
     def _create_session(
-        self,
-        max_retries: int,
-        backoff_factor: float,
-        pool_connections: int,
-        pool_maxsize: int
+        self, max_retries: int, backoff_factor: float, pool_connections: int, pool_maxsize: int
     ) -> requests.Session:
         """
         Create session with retry strategy and connection pooling.
@@ -72,23 +66,23 @@ class HTTPClient:
             total=max_retries,
             backoff_factor=backoff_factor,
             status_forcelist=[429, 500, 502, 503, 504],
-            allowed_methods=["HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"]
+            allowed_methods=["HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS", "TRACE"],
         )
 
         # Apply adapter with retry strategy
         adapter = HTTPAdapter(
-            max_retries=retry_strategy,
-            pool_connections=pool_connections,
-            pool_maxsize=pool_maxsize
+            max_retries=retry_strategy, pool_connections=pool_connections, pool_maxsize=pool_maxsize
         )
 
         session.mount("http://", adapter)
         session.mount("https://", adapter)
 
         # Set default headers
-        session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'
-        })
+        session.headers.update(
+            {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0"
+            }
+        )
 
         return session
 
@@ -97,7 +91,7 @@ class HTTPClient:
         url: str,
         params: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
-        **kwargs
+        **kwargs,
     ) -> requests.Response:
         """
         Perform GET request with retries.
@@ -116,11 +110,7 @@ class HTTPClient:
         """
         try:
             response = self.session.get(
-                url,
-                params=params,
-                headers=headers,
-                timeout=self.timeout,
-                **kwargs
+                url, params=params, headers=headers, timeout=self.timeout, **kwargs
             )
             response.raise_for_status()
             logger.debug(f"GET {url} - Status: {response.status_code}")
@@ -136,7 +126,7 @@ class HTTPClient:
         data: Optional[Dict[str, Any]] = None,
         json: Optional[Dict[str, Any]] = None,
         headers: Optional[Dict[str, str]] = None,
-        **kwargs
+        **kwargs,
     ) -> requests.Response:
         """
         Perform POST request with retries.
@@ -156,12 +146,7 @@ class HTTPClient:
         """
         try:
             response = self.session.post(
-                url,
-                data=data,
-                json=json,
-                headers=headers,
-                timeout=self.timeout,
-                **kwargs
+                url, data=data, json=json, headers=headers, timeout=self.timeout, **kwargs
             )
             response.raise_for_status()
             logger.debug(f"POST {url} - Status: {response.status_code}")
@@ -187,9 +172,7 @@ class HTTPClient:
 
 # Convenience function to create client with default settings
 def create_http_client(
-    timeout: int = 30,
-    max_retries: int = 3,
-    backoff_factor: float = 1.0
+    timeout: int = 30, max_retries: int = 3, backoff_factor: float = 1.0
 ) -> HTTPClient:
     """
     Create HTTP client with default or custom settings.
@@ -211,8 +194,4 @@ def create_http_client(
         >>> with create_http_client() as client:
         ...     response = client.get('https://example.com')
     """
-    return HTTPClient(
-        timeout=timeout,
-        max_retries=max_retries,
-        backoff_factor=backoff_factor
-    )
+    return HTTPClient(timeout=timeout, max_retries=max_retries, backoff_factor=backoff_factor)

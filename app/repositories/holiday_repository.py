@@ -1,11 +1,11 @@
 """Repository for managing holidays and vacation data."""
 
 import json
-from pathlib import Path
-from datetime import date
-from typing import List, Dict, Optional
-from functools import lru_cache
 import logging
+from datetime import date
+from functools import lru_cache
+from pathlib import Path
+from typing import Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +48,11 @@ class HolidayRepository:
                 "regional_holidays": {},
                 "movable_holidays": {},
                 "personal_vacations": {},
-                "occasional_telework": {}
+                "occasional_telework": {},
             }
 
         try:
-            with open(holidays_file, 'r', encoding='utf-8') as f:
+            with open(holidays_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 logger.info(f"Loaded holidays from {holidays_file}")
                 return data
@@ -77,10 +77,7 @@ class HolidayRepository:
             True
         """
         date_str = check_date.strftime("%d/%m")
-        return any(
-            h["date"] == date_str
-            for h in self._holidays_data.get("annual_holidays", [])
-        )
+        return any(h["date"] == date_str for h in self._holidays_data.get("annual_holidays", []))
 
     @lru_cache(maxsize=365)
     def is_regional_holiday(self, check_date: date, region: str = "madrid") -> bool:
@@ -135,9 +132,9 @@ class HolidayRepository:
             True if it's a holiday
         """
         return (
-            self.is_annual_holiday(check_date) or
-            self.is_regional_holiday(check_date, region) or
-            self.is_movable_holiday(check_date)
+            self.is_annual_holiday(check_date)
+            or self.is_regional_holiday(check_date, region)
+            or self.is_movable_holiday(check_date)
         )
 
     def get_holiday_name(self, check_date: date, region: str = "madrid") -> Optional[str]:
@@ -224,30 +221,20 @@ class HolidayRepository:
 
         # Annual holidays (apply to all years)
         for h in self._holidays_data.get("annual_holidays", []):
-            holidays.append({
-                "date": f"{h['date']}/{year}",
-                "name": h["name"],
-                "type": h["type"]
-            })
+            holidays.append({"date": f"{h['date']}/{year}", "name": h["name"], "type": h["type"]})
 
         # Regional holidays
         regional = self._holidays_data.get("regional_holidays", {}).get(region, {})
         if year_str in regional:
             for h in regional[year_str]:
-                holidays.append({
-                    "date": f"{h['date']}/{year}",
-                    "name": h["name"],
-                    "type": "regional"
-                })
+                holidays.append(
+                    {"date": f"{h['date']}/{year}", "name": h["name"], "type": "regional"}
+                )
 
         # Movable holidays
         movable = self._holidays_data.get("movable_holidays", {}).get(year_str, [])
         for h in movable:
-            holidays.append({
-                "date": f"{h['date']}/{year}",
-                "name": h["name"],
-                "type": "movable"
-            })
+            holidays.append({"date": f"{h['date']}/{year}", "name": h["name"], "type": "movable"})
 
         return holidays
 

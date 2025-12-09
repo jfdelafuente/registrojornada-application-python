@@ -1,15 +1,16 @@
 """ViveOrange client for workday registration - Refactored version."""
 
-from datetime import date
 import logging
-import requests
+from datetime import date
 from typing import Optional
+
+import requests
 
 # Import new architecture components
 from config import get_settings
+from models.workday import WorkdayTypeEnum
 from services.auth_service import AuthService
 from services.hr_service import HRService
-from models.workday import WorkdayTypeEnum
 
 logger = logging.getLogger(__name__)
 
@@ -66,14 +67,16 @@ class ViveOrange:
         Returns:
             Formatted message with operation results
         """
-        mensaje = ''
+        mensaje = ""
 
         try:
             # Create session
             session = requests.Session()
-            session.headers.update({
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0'
-            })
+            session.headers.update(
+                {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:108.0) Gecko/20100101 Firefox/108.0"
+                }
+            )
 
             logger.info("Connecting to ViveOrange...")
 
@@ -107,27 +110,24 @@ class ViveOrange:
                     start_time=start_time,
                     end_time=end_time,
                     workday_type=workday_type,
-                    location=location
+                    location=location,
                 )
 
                 if registration.success:
-                    mensaje += f'\n✅ {registration.message}'
+                    mensaje += f"\n✅ {registration.message}"
                     logger.info(f"Workday registered successfully")
                 else:
-                    mensaje += f'\n❌ {registration.message}'
+                    mensaje += f"\n❌ {registration.message}"
                     logger.warning(f"Workday registration failed")
 
             # Step 3: Get weekly report
             logger.info("Fetching weekly report...")
 
-            report = self.hr_service.get_weekly_report(
-                session=session,
-                previous_week=self.pasada
-            )
+            report = self.hr_service.get_weekly_report(session=session, previous_week=self.pasada)
 
             # Format report message
             report_msg = self.hr_service.format_report_message(report)
-            mensaje += f'\n\n{report_msg}'
+            mensaje += f"\n\n{report_msg}"
 
             logger.info("ViveOrange operation completed successfully")
             return mensaje
@@ -144,7 +144,7 @@ class ViveOrange:
 
         finally:
             # Close session
-            if 'session' in locals():
+            if "session" in locals():
                 session.close()
                 logger.debug("Session closed")
 

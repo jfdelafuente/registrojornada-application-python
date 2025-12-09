@@ -1,19 +1,21 @@
 """HR service for workday registration and reporting."""
 
-from bs4 import BeautifulSoup
-from datetime import date, datetime, timedelta
-from typing import Tuple, List
 import logging
+from datetime import date, datetime, timedelta
+from typing import List, Tuple
+
 import requests
+from bs4 import BeautifulSoup
+
 from app.config import get_settings
-from app.models.workday import WorkdayRegistration, WeeklyReport
-from app.models.enums import WorkdayTypeEnum
 from app.exceptions import (
+    HTMLParsingError,
     RegistrationError,
     ReportGenerationError,
-    HTMLParsingError,
-    ValidationError
+    ValidationError,
 )
+from app.models.enums import WorkdayTypeEnum
+from app.models.workday import WeeklyReport, WorkdayRegistration
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +41,7 @@ class HRService:
         start_time: str,
         end_time: str,
         workday_type: WorkdayTypeEnum = WorkdayTypeEnum.TELEWORK,
-        location: str = ""
+        location: str = "",
     ) -> WorkdayRegistration:
         """
         Register a workday in ViveOrange system.
@@ -66,16 +68,13 @@ class HRService:
                 start_time=start_time,
                 end_time=end_time,
                 workday_type=workday_type,
-                location=location
+                location=location,
             )
 
         except Exception as e:
             # Pydantic validation failed
             logger.error(f"Invalid workday data: {e}")
-            raise ValidationError(
-                "Invalid workday registration data",
-                {'error': str(e)}
-            )
+            raise ValidationError("Invalid workday registration data", {"error": str(e)})
 
         date_str = work_date.strftime("%d/%m/%Y")
         logger.info(f"Registering workday for {date_str} from {start_time} to {end_time}")
@@ -90,8 +89,8 @@ class HRService:
                     "fechaini": f"{date_str} {start_time}",
                     "fechafin": f"{date_str} {end_time}",
                     "sede": location,
-                    "horaEfectiva": ""
-                }
+                    "horaEfectiva": "",
+                },
             )
             response.raise_for_status()
 
@@ -101,42 +100,35 @@ class HRService:
             html_text = response.text
             if response.status_code == 200 and "error" not in html_text.lower():
                 registration.success = True
-                registration.message = f"Registered successfully: {date_str} {start_time}-{end_time}"
+                registration.message = (
+                    f"Registered successfully: {date_str} {start_time}-{end_time}"
+                )
                 logger.info(f"✓ Workday registered: {date_str}")
             else:
                 registration.success = False
                 registration.message = "Registration failed - check response"
                 logger.warning(f"Registration may have failed for {date_str}")
-                raise RegistrationError(
-                    date=date_str,
-                    reason="Server returned error in response"
-                )
+                raise RegistrationError(date=date_str, reason="Server returned error in response")
 
             registration.hours_worked = registration.calculate_hours()
             return registration
 
         except requests.RequestException as e:
             logger.error(f"Network error during workday registration: {e}")
-            raise RegistrationError(
-                date=date_str,
-                reason=f"Network error: {str(e)}"
-            )
+            raise RegistrationError(date=date_str, reason=f"Network error: {str(e)}")
         except RegistrationError:
             # Re-raise RegistrationError
             raise
         except Exception as e:
             logger.error(f"Unexpected error during workday registration: {e}", exc_info=True)
-            raise RegistrationError(
-                date=date_str,
-                reason=f"Unexpected error: {str(e)}"
-            )
+            raise RegistrationError(date=date_str, reason=f"Unexpected error: {str(e)}")
 
     def get_weekly_report(
         self,
         session: requests.Session,
         start_date: date = None,
         end_date: date = None,
-        previous_week: bool = False
+        previous_week: bool = False,
     ) -> WeeklyReport:
         """
         Get weekly workday report from ViveOrange.
@@ -180,8 +172,8 @@ class HRService:
                     "movil": "0",
                     "num": "0",
                     "seleccionFechaInicio": start_str,
-                    "seleccionFechaFin": end_str
-                }
+                    "seleccionFechaFin": end_str,
+                },
             )
             response.raise_for_status()
 
@@ -189,32 +181,23 @@ class HRService:
 
             # Parse HTML response
             report = self._parse_report_html(response.text, start_date, end_date)
-            logger.info(f"✓ Report parsed: {report.total_days} days, {report.total_hours:.2f} hours")
+            logger.info(
+                f"✓ Report parsed: {report.total_days} days, {report.total_hours:.2f} hours"
+            )
 
             return report
 
         except requests.RequestException as e:
             logger.error(f"Network error fetching weekly report: {e}")
-            raise ReportGenerationError(
-                report_type="weekly",
-                reason=f"Network error: {str(e)}"
-            )
+            raise ReportGenerationError(report_type="weekly", reason=f"Network error: {str(e)}")
         except HTMLParsingError:
             # Re-raise HTML parsing errors
             raise
         except Exception as e:
             logger.error(f"Unexpected error generating report: {e}", exc_info=True)
-            raise ReportGenerationError(
-                report_type="weekly",
-                reason=f"Unexpected error: {str(e)}"
-            )
+            raise ReportGenerationError(report_type="weekly", reason=f"Unexpected error: {str(e)}")
 
-    def _parse_report_html(
-        self,
-        html_text: str,
-        start_date: date,
-        end_date: date
-    ) -> WeeklyReport:
+    def _parse_report_html(self, html_text: str, start_date: date, end_date: date) -> WeeklyReport:
         """
         Parse HTML report into structured WeeklyReport.
 
@@ -226,14 +209,11 @@ class HRService:
         Returns:
             Populated WeeklyReport
         """
-        report = WeeklyReport(
-            start_date=start_date,
-            end_date=end_date
-        )
+        report = WeeklyReport(start_date=start_date, end_date=end_date)
 
         try:
-            soup = BeautifulSoup(html_text, 'lxml')
-            rows = soup.select('#tblEventos > tbody > tr')
+            soup = BeautifulSoup(html_text, "lxml")
+            rows = soup.select("#tblEventos > tbody > tr")
 
             if not rows:
                 # No rows found - might be no data or wrong selector
@@ -250,9 +230,9 @@ class HRService:
                     # Column 5: End date/time
                     # Column 6: Duration
 
-                    start_elem = row.select_one('td:nth-child(3)')
-                    type_elem = row.select_one('td:nth-child(4)')
-                    end_elem = row.select_one('td:nth-child(5)')
+                    start_elem = row.select_one("td:nth-child(3)")
+                    type_elem = row.select_one("td:nth-child(4)")
+                    end_elem = row.select_one("td:nth-child(5)")
 
                     if not start_elem or not type_elem or not end_elem:
                         logger.warning("Missing table columns in row, skipping")
@@ -265,8 +245,8 @@ class HRService:
                     logger.debug(f"Parsing row: {start_str} | {type_location} | {end_str}")
 
                     # Parse dates and times
-                    start_dt = datetime.strptime(start_str, '%d/%m/%Y %H:%M')
-                    end_dt = datetime.strptime(end_str, '%d/%m/%Y %H:%M')
+                    start_dt = datetime.strptime(start_str, "%d/%m/%Y %H:%M")
+                    end_dt = datetime.strptime(end_str, "%d/%m/%Y %H:%M")
 
                     # Determine workday type from location text
                     workday_type = WorkdayTypeEnum.TELEWORK
@@ -285,12 +265,12 @@ class HRService:
                     # Create registration
                     registration = WorkdayRegistration(
                         date=start_dt.date(),
-                        start_time=start_dt.strftime('%H:%M'),
-                        end_time=end_dt.strftime('%H:%M'),
+                        start_time=start_dt.strftime("%H:%M"),
+                        end_time=end_dt.strftime("%H:%M"),
                         workday_type=workday_type,
                         location=location,
                         success=True,
-                        message="Retrieved from report"
+                        message="Retrieved from report",
                     )
 
                     registration.hours_worked = registration.calculate_hours()

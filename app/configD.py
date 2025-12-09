@@ -5,7 +5,7 @@ FESTIVO = "Es día festivo."
 VACACIONES = "Hoy estás de vacaciones. Disfruta del día."
 
 # Dias teletrabajo (Lunes=1, Martes=2, Miercoles=3, Jueves=4, Viernes=5)
-diasTeletrabajo = [1,2]
+diasTeletrabajo = [1, 2]
 
 # Horas
 hinicio = "8:00"
@@ -14,12 +14,12 @@ hinicioV = "7:30"
 hfinV = "15:00"
 
 # Programa
-urlVO = 'https://newvo.orange.es'
-urlOAMBase = 'https://applogin.orange.es'
-urlRegistroJ = 'https://newvo.orange.es/group/viveorange/registro-de-jornada'
-urlRegistroJC = 'https://newvo.orange.es/api/jsonws/invoke'
-urlRJAccion = 'https://www.registratujornadaorange.com/RealizarAccion'
-urlRJInforme = 'https://www.registratujornadaorange.com/ObtenerContenidoInformeGeneral'
+urlVO = "https://newvo.orange.es"
+urlOAMBase = "https://applogin.orange.es"
+urlRegistroJ = "https://newvo.orange.es/group/viveorange/registro-de-jornada"
+urlRegistroJC = "https://newvo.orange.es/api/jsonws/invoke"
+urlRJAccion = "https://www.registratujornadaorange.com/RealizarAccion"
+urlRJInforme = "https://www.registratujornadaorange.com/ObtenerContenidoInformeGeneral"
 
 # Festivos que se repiten todos los años
 festivosAnuales = []
@@ -35,8 +35,8 @@ festivosAnuales.append("01/11")
 festivosAnuales.append("06/12")
 festivosAnuales.append("08/12")
 festivosAnuales.append("25/12")
-festivosAnuales.append("15/05") # San Isidro
-festivosAnuales.append("09/11") # Almudena
+festivosAnuales.append("15/05")  # San Isidro
+festivosAnuales.append("09/11")  # Almudena
 
 # festivosOtros vacaciones (año completo)
 festivosOtros = []

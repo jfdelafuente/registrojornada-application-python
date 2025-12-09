@@ -34,7 +34,7 @@ def mock_settings(temp_dir):
         logs_dir=temp_dir / "logs",
         data_dir=temp_dir / "data",
         holidays_file=temp_dir / "data" / "holidays.json",
-        log_level="DEBUG"
+        log_level="DEBUG",
     )
 
 
@@ -42,32 +42,20 @@ def mock_settings(temp_dir):
 def sample_holidays_data():
     """Sample holidays data for testing."""
     return {
-        "info": {
-            "description": "Test holidays",
-            "years": ["2025"],
-            "last_updated": "2025-12-08"
-        },
+        "info": {"description": "Test holidays", "years": ["2025"], "last_updated": "2025-12-08"},
         "national": [
-            {
-                "date": "2025-01-01",
-                "name": "Año Nuevo",
-                "description": "Primer día del año"
-            },
-            {
-                "date": "2025-12-25",
-                "name": "Navidad",
-                "description": "Navidad"
-            }
+            {"date": "2025-01-01", "name": "Año Nuevo", "description": "Primer día del año"},
+            {"date": "2025-12-25", "name": "Navidad", "description": "Navidad"},
         ],
         "regional": {
             "madrid": [
                 {
                     "date": "2025-05-02",
                     "name": "Fiesta de la Comunidad de Madrid",
-                    "description": "Dos de Mayo"
+                    "description": "Dos de Mayo",
                 }
             ]
-        }
+        },
     }
 
 
@@ -94,17 +82,14 @@ def sample_workday():
         location="Home",
         success=True,
         message="Registered successfully",
-        hours_worked=9.0
+        hours_worked=9.0,
     )
 
 
 @pytest.fixture
 def sample_weekly_report(sample_workday):
     """Create a sample weekly report."""
-    report = WeeklyReport(
-        start_date=date(2025, 12, 1),
-        end_date=date(2025, 12, 7)
-    )
+    report = WeeklyReport(start_date=date(2025, 12, 1), end_date=date(2025, 12, 7))
     report.add_registration(sample_workday)
     return report
 

@@ -35,6 +35,7 @@ class RegistroJornadaException(Exception):
 
 class AuthenticationError(RegistroJornadaException):
     """Base class for authentication-related errors."""
+
     pass
 
 
@@ -42,11 +43,8 @@ class InvalidCredentialsError(AuthenticationError):
     """Raised when username or password is invalid."""
 
     def __init__(self, username: str = None):
-        details = {'username': username} if username else {}
-        super().__init__(
-            "Invalid credentials provided",
-            details
-        )
+        details = {"username": username} if username else {}
+        super().__init__("Invalid credentials provided", details)
 
 
 class SessionExpiredError(AuthenticationError):
@@ -60,11 +58,8 @@ class OAMRedirectError(AuthenticationError):
     """Raised when OAM redirect fails."""
 
     def __init__(self, step: str = None):
-        details = {'step': step} if step else {}
-        super().__init__(
-            "OAM authentication redirect failed",
-            details
-        )
+        details = {"step": step} if step else {}
+        super().__init__("OAM authentication redirect failed", details)
 
 
 # ============================================================================
@@ -74,6 +69,7 @@ class OAMRedirectError(AuthenticationError):
 
 class HRServiceError(RegistroJornadaException):
     """Base class for HR service operation errors."""
+
     pass
 
 
@@ -83,14 +79,11 @@ class RegistrationError(HRServiceError):
     def __init__(self, date: str = None, reason: str = None):
         details = {}
         if date:
-            details['date'] = date
+            details["date"] = date
         if reason:
-            details['reason'] = reason
+            details["reason"] = reason
 
-        super().__init__(
-            "Failed to register workday",
-            details
-        )
+        super().__init__("Failed to register workday", details)
 
 
 class ReportGenerationError(HRServiceError):
@@ -99,25 +92,19 @@ class ReportGenerationError(HRServiceError):
     def __init__(self, report_type: str = None, reason: str = None):
         details = {}
         if report_type:
-            details['report_type'] = report_type
+            details["report_type"] = report_type
         if reason:
-            details['reason'] = reason
+            details["reason"] = reason
 
-        super().__init__(
-            "Failed to generate report",
-            details
-        )
+        super().__init__("Failed to generate report", details)
 
 
 class HTMLParsingError(HRServiceError):
     """Raised when HTML parsing fails."""
 
     def __init__(self, element: str = None):
-        details = {'element': element} if element else {}
-        super().__init__(
-            "Failed to parse HTML response",
-            details
-        )
+        details = {"element": element} if element else {}
+        super().__init__("Failed to parse HTML response", details)
 
 
 # ============================================================================
@@ -127,6 +114,7 @@ class HTMLParsingError(HRServiceError):
 
 class ValidationError(RegistroJornadaException):
     """Base class for data validation errors."""
+
     pass
 
 
@@ -136,36 +124,27 @@ class InvalidDateError(ValidationError):
     def __init__(self, date_str: str = None, format_expected: str = None):
         details = {}
         if date_str:
-            details['date'] = date_str
+            details["date"] = date_str
         if format_expected:
-            details['expected_format'] = format_expected
+            details["expected_format"] = format_expected
 
-        super().__init__(
-            "Invalid date provided",
-            details
-        )
+        super().__init__("Invalid date provided", details)
 
 
 class InvalidTimeFormatError(ValidationError):
     """Raised when time format is invalid."""
 
     def __init__(self, time_str: str = None):
-        details = {'time': time_str} if time_str else {}
-        super().__init__(
-            "Invalid time format (expected HH:MM)",
-            details
-        )
+        details = {"time": time_str} if time_str else {}
+        super().__init__("Invalid time format (expected HH:MM)", details)
 
 
 class InvalidWorkdayTypeError(ValidationError):
     """Raised when workday type is invalid."""
 
     def __init__(self, workday_type: str = None):
-        details = {'workday_type': workday_type} if workday_type else {}
-        super().__init__(
-            "Invalid workday type",
-            details
-        )
+        details = {"workday_type": workday_type} if workday_type else {}
+        super().__init__("Invalid workday type", details)
 
 
 class HolidayValidationError(ValidationError):
@@ -174,14 +153,11 @@ class HolidayValidationError(ValidationError):
     def __init__(self, date: str = None, holiday_name: str = None):
         details = {}
         if date:
-            details['date'] = date
+            details["date"] = date
         if holiday_name:
-            details['holiday'] = holiday_name
+            details["holiday"] = holiday_name
 
-        super().__init__(
-            "Cannot register workday on holiday",
-            details
-        )
+        super().__init__("Cannot register workday on holiday", details)
 
 
 # ============================================================================
@@ -191,6 +167,7 @@ class HolidayValidationError(ValidationError):
 
 class NetworkError(RegistroJornadaException):
     """Base class for network-related errors."""
+
     pass
 
 
@@ -200,14 +177,11 @@ class ConnectionTimeoutError(NetworkError):
     def __init__(self, url: str = None, timeout: int = None):
         details = {}
         if url:
-            details['url'] = url
+            details["url"] = url
         if timeout:
-            details['timeout_seconds'] = timeout
+            details["timeout_seconds"] = timeout
 
-        super().__init__(
-            "Connection timed out",
-            details
-        )
+        super().__init__("Connection timed out", details)
 
 
 class ServiceUnavailableError(NetworkError):
@@ -216,14 +190,11 @@ class ServiceUnavailableError(NetworkError):
     def __init__(self, service_name: str = None, status_code: int = None):
         details = {}
         if service_name:
-            details['service'] = service_name
+            details["service"] = service_name
         if status_code:
-            details['status_code'] = status_code
+            details["status_code"] = status_code
 
-        super().__init__(
-            "External service is unavailable",
-            details
-        )
+        super().__init__("External service is unavailable", details)
 
 
 class HTTPError(NetworkError):
@@ -232,14 +203,11 @@ class HTTPError(NetworkError):
     def __init__(self, status_code: int = None, url: str = None):
         details = {}
         if status_code:
-            details['status_code'] = status_code
+            details["status_code"] = status_code
         if url:
-            details['url'] = url
+            details["url"] = url
 
-        super().__init__(
-            "HTTP request failed",
-            details
-        )
+        super().__init__("HTTP request failed", details)
 
 
 # ============================================================================
@@ -249,6 +217,7 @@ class HTTPError(NetworkError):
 
 class ConfigurationError(RegistroJornadaException):
     """Base class for configuration-related errors."""
+
     pass
 
 
@@ -256,11 +225,8 @@ class MissingConfigurationError(ConfigurationError):
     """Raised when required configuration is missing."""
 
     def __init__(self, config_key: str = None):
-        details = {'config_key': config_key} if config_key else {}
-        super().__init__(
-            "Required configuration is missing",
-            details
-        )
+        details = {"config_key": config_key} if config_key else {}
+        super().__init__("Required configuration is missing", details)
 
 
 class InvalidConfigurationError(ConfigurationError):
@@ -269,14 +235,11 @@ class InvalidConfigurationError(ConfigurationError):
     def __init__(self, config_key: str = None, value: str = None):
         details = {}
         if config_key:
-            details['config_key'] = config_key
+            details["config_key"] = config_key
         if value:
-            details['value'] = value
+            details["value"] = value
 
-        super().__init__(
-            "Configuration value is invalid",
-            details
-        )
+        super().__init__("Configuration value is invalid", details)
 
 
 # ============================================================================
@@ -286,6 +249,7 @@ class InvalidConfigurationError(ConfigurationError):
 
 class NotificationError(RegistroJornadaException):
     """Base class for notification-related errors."""
+
     pass
 
 
@@ -295,14 +259,11 @@ class TelegramSendError(NotificationError):
     def __init__(self, chat_id: str = None, reason: str = None):
         details = {}
         if chat_id:
-            details['chat_id'] = chat_id
+            details["chat_id"] = chat_id
         if reason:
-            details['reason'] = reason
+            details["reason"] = reason
 
-        super().__init__(
-            "Failed to send Telegram message",
-            details
-        )
+        super().__init__("Failed to send Telegram message", details)
 
 
 # ============================================================================
@@ -312,6 +273,7 @@ class TelegramSendError(NotificationError):
 
 class RepositoryError(RegistroJornadaException):
     """Base class for repository-related errors."""
+
     pass
 
 
@@ -321,14 +283,11 @@ class DataNotFoundError(RepositoryError):
     def __init__(self, resource: str = None, identifier: str = None):
         details = {}
         if resource:
-            details['resource'] = resource
+            details["resource"] = resource
         if identifier:
-            details['identifier'] = identifier
+            details["identifier"] = identifier
 
-        super().__init__(
-            "Requested data not found",
-            details
-        )
+        super().__init__("Requested data not found", details)
 
 
 class DataLoadError(RepositoryError):
@@ -337,14 +296,11 @@ class DataLoadError(RepositoryError):
     def __init__(self, source: str = None, reason: str = None):
         details = {}
         if source:
-            details['source'] = source
+            details["source"] = source
         if reason:
-            details['reason'] = reason
+            details["reason"] = reason
 
-        super().__init__(
-            "Failed to load data",
-            details
-        )
+        super().__init__("Failed to load data", details)
 
 
 # ============================================================================
@@ -353,44 +309,37 @@ class DataLoadError(RepositoryError):
 
 __all__ = [
     # Base
-    'RegistroJornadaException',
-
+    "RegistroJornadaException",
     # Authentication
-    'AuthenticationError',
-    'InvalidCredentialsError',
-    'SessionExpiredError',
-    'OAMRedirectError',
-
+    "AuthenticationError",
+    "InvalidCredentialsError",
+    "SessionExpiredError",
+    "OAMRedirectError",
     # HR Service
-    'HRServiceError',
-    'RegistrationError',
-    'ReportGenerationError',
-    'HTMLParsingError',
-
+    "HRServiceError",
+    "RegistrationError",
+    "ReportGenerationError",
+    "HTMLParsingError",
     # Validation
-    'ValidationError',
-    'InvalidDateError',
-    'InvalidTimeFormatError',
-    'InvalidWorkdayTypeError',
-    'HolidayValidationError',
-
+    "ValidationError",
+    "InvalidDateError",
+    "InvalidTimeFormatError",
+    "InvalidWorkdayTypeError",
+    "HolidayValidationError",
     # Network
-    'NetworkError',
-    'ConnectionTimeoutError',
-    'ServiceUnavailableError',
-    'HTTPError',
-
+    "NetworkError",
+    "ConnectionTimeoutError",
+    "ServiceUnavailableError",
+    "HTTPError",
     # Configuration
-    'ConfigurationError',
-    'MissingConfigurationError',
-    'InvalidConfigurationError',
-
+    "ConfigurationError",
+    "MissingConfigurationError",
+    "InvalidConfigurationError",
     # Notification
-    'NotificationError',
-    'TelegramSendError',
-
+    "NotificationError",
+    "TelegramSendError",
     # Repository
-    'RepositoryError',
-    'DataNotFoundError',
-    'DataLoadError',
+    "RepositoryError",
+    "DataNotFoundError",
+    "DataLoadError",
 ]
